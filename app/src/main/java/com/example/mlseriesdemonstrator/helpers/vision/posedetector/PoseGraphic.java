@@ -261,12 +261,14 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     }
 
 
+
+
   }
 
 
 
   float calculateAngles(PoseLandmark a, PoseLandmark b, PoseLandmark c){
-    float angle = (float) (Math.toDegrees((Math.atan2(c.getPosition().y - b.getPosition().y, c.getPosition().x - c.getPosition().x) - Math.atan2(a.getPosition().y - b.getPosition().y, a.getPosition().x - b.getPosition().x)) * 180)/Math.PI);
+    float angle = (float) Math.abs((Math.toDegrees(Math.atan2(c.getPosition().y - b.getPosition().y, c.getPosition().x - b.getPosition().x) - Math.atan2(a.getPosition().y - b.getPosition().y, a.getPosition().x - b.getPosition().x))));
     if(angle > 180){
       angle -= 180;
     }

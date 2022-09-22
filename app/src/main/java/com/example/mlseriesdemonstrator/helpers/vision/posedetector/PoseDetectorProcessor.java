@@ -113,6 +113,7 @@ public class PoseDetectorProcessor
                   poseClassifierProcessor = new PoseClassifierProcessor(context, isStreamMode);
                 }
                 classificationResult = poseClassifierProcessor.getPoseResult(pose);
+
               }
               return new PoseWithClassification(pose, classificationResult);
             });
@@ -133,7 +134,7 @@ public class PoseDetectorProcessor
                   poseClassifierProcessor = new PoseClassifierProcessor(context, isStreamMode);
                 }
                 classificationResult = poseClassifierProcessor.getPoseResult(pose);
-                //System.out.println(classificationResult);
+                System.out.println("Pose classification: " + classificationResult.get(classificationResult.size()-1));
               }
               return new PoseWithClassification(pose, classificationResult);
             });

@@ -24,6 +24,8 @@ import android.util.Log;
 import androidx.annotation.WorkerThread;
 import com.google.common.base.Preconditions;
 import com.google.mlkit.vision.pose.Pose;
+import com.google.mlkit.vision.pose.PoseLandmark;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,9 +46,10 @@ public class PoseClassifierProcessor {
   private static final String GODDESS_CLASS = "goddess";
   private static final String TREE_CLASS = "tree";
   private static final String WARRIOR2_CLASS = "warrior2";
+  private static final String NO_POSE_DETECTED = "no pose detected";
 
   private static final String[] POSE_CLASSES = {
-        GODDESS_CLASS, TREE_CLASS, WARRIOR2_CLASS
+        GODDESS_CLASS, TREE_CLASS, WARRIOR2_CLASS, NO_POSE_DETECTED
   };
 
   private final boolean isStreamMode;
@@ -86,6 +89,7 @@ public class PoseClassifierProcessor {
       Log.e(TAG, "Error when loading pose samples.\n" + e);
     }
     poseClassifier = new PoseClassifier(poseSamples);
+
     if (isStreamMode) {
       for (String className : POSE_CLASSES) {
         repCounters.add(new RepetitionCounter(className));
@@ -103,6 +107,8 @@ public class PoseClassifierProcessor {
    */
   @WorkerThread
   public List<String> getPoseResult(Pose pose) {
+    List<PoseLandmark> landmarks = pose.getAllPoseLandmarks();
+    boolean allPartsDetected = true;
     Preconditions.checkState(Looper.myLooper() != Looper.getMainLooper());
     List<String> result = new ArrayList<>();
     ClassificationResult classification = poseClassifier.classify(pose);
@@ -113,28 +119,40 @@ public class PoseClassifierProcessor {
       classification = emaSmoothing.getSmoothedResult(classification);
 
       // Return early without updating repCounter if no pose found.
-//      if (pose.getAllPoseLandmarks().isEmpty()) {
-//        result.add(lastRepResult);
-//        return result;
-//      }
-//
-//      for (RepetitionCounter repCounter : repCounters) {
-//        int repsBefore = repCounter.getNumRepeats();
-//        int repsAfter = repCounter.addClassificationResult(classification);
-//        if (repsAfter > repsBefore) {
-//          // Play a fun beep when rep counter updates.
-//          ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
-//          tg.startTone(ToneGenerator.TONE_PROP_BEEP);
-//          lastRepResult = String.format(
-//              Locale.US, "%s : %d reps", repCounter.getClassName(), repsAfter);
-//          break;
-//        }
-//      }
+      if (pose.getAllPoseLandmarks().isEmpty()) {
+        result.add(lastRepResult);
+        return result;
+      }
+
+
+
+      for (RepetitionCounter repCounter : repCounters) {
+        int repsBefore = repCounter.getNumRepeats();
+        int repsAfter = repCounter.addClassificationResult(classification);
+        if (repsAfter > repsBefore) {
+          // Play a fun beep when rep counter updates.
+          ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
+          tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+          lastRepResult = String.format(
+              Locale.US, "%s : %d reps", repCounter.getClassName(), repsAfter);
+          break;
+        }
+      }
       //result.add(lastRepResult);
     }
 
+
+    for(PoseLandmark landmark : landmarks){
+      if(landmark == null){
+        result.add("Please make sure all body parts are detected");
+        allPartsDetected = false;
+      }else{
+        continue;
+      }
+    }
+
     // Add maxConfidence class of current frame to result if pose is found.
-    if (!pose.getAllPoseLandmarks().isEmpty()) {
+    if (!pose.getAllPoseLandmarks().isEmpty() && allPartsDetected) {
       String maxConfidenceClass = classification.getMaxConfidenceClass();
       String maxConfidenceClassResult = String.format(
           Locale.US,
