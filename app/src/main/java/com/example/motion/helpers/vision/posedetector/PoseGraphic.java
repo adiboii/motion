@@ -122,6 +122,17 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.RIGHT_EAR));
     landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.LEFT_MOUTH));
     landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.RIGHT_MOUTH));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.RIGHT_PINKY));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.LEFT_PINKY));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.LEFT_HEEL));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.RIGHT_INDEX));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.LEFT_INDEX));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.RIGHT_THUMB));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.LEFT_THUMB));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX));
+    landmarksToAvoid.add(pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX));
+
 
     // Draw all the points
     for (PoseLandmark landmark : landmarks) {
@@ -149,28 +160,6 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     PoseLandmark leftAnkle = pose.getPoseLandmark(PoseLandmark.LEFT_ANKLE);
     PoseLandmark rightAnkle = pose.getPoseLandmark(PoseLandmark.RIGHT_ANKLE);
 
-    PoseLandmark leftPinky = pose.getPoseLandmark(PoseLandmark.LEFT_PINKY);
-    PoseLandmark rightPinky = pose.getPoseLandmark(PoseLandmark.RIGHT_PINKY);
-    PoseLandmark leftIndex = pose.getPoseLandmark(PoseLandmark.LEFT_INDEX);
-    PoseLandmark rightIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_INDEX);
-    PoseLandmark leftThumb = pose.getPoseLandmark(PoseLandmark.LEFT_THUMB);
-    PoseLandmark rightThumb = pose.getPoseLandmark(PoseLandmark.RIGHT_THUMB);
-    PoseLandmark leftHeel = pose.getPoseLandmark(PoseLandmark.LEFT_HEEL);
-    PoseLandmark rightHeel = pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL);
-    PoseLandmark leftFootIndex = pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX);
-    PoseLandmark rightFootIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX);
-
-    // Face
-//    drawLine(canvas, nose, lefyEyeInner, whitePaint);
-//    drawLine(canvas, lefyEyeInner, lefyEye, whitePaint);
-//    drawLine(canvas, lefyEye, leftEyeOuter, whitePaint);
-//    drawLine(canvas, leftEyeOuter, leftEar, whitePaint);
-//    drawLine(canvas, nose, rightEyeInner, whitePaint);
-//    drawLine(canvas, rightEyeInner, rightEye, whitePaint);
-//    drawLine(canvas, rightEye, rightEyeOuter, whitePaint);
-//    drawLine(canvas, rightEyeOuter, rightEar, whitePaint);
-//    drawLine(canvas, leftMouth, rightMouth, whitePaint);
-
     drawLine(canvas, leftShoulder, rightShoulder, whitePaint);
     drawLine(canvas, leftHip, rightHip, whitePaint);
 
@@ -180,12 +169,6 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     drawLine(canvas, leftShoulder, leftHip, leftPaint);
     drawLine(canvas, leftHip, leftKnee, leftPaint);
     drawLine(canvas, leftKnee, leftAnkle, leftPaint);
-    drawLine(canvas, leftWrist, leftThumb, leftPaint);
-    drawLine(canvas, leftWrist, leftPinky, leftPaint);
-    drawLine(canvas, leftWrist, leftIndex, leftPaint);
-    drawLine(canvas, leftIndex, leftPinky, leftPaint);
-    drawLine(canvas, leftAnkle, leftHeel, leftPaint);
-    drawLine(canvas, leftHeel, leftFootIndex, leftPaint);
 
     // Right body
     drawLine(canvas, rightShoulder, rightElbow, rightPaint);
@@ -193,24 +176,18 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     drawLine(canvas, rightShoulder, rightHip, rightPaint);
     drawLine(canvas, rightHip, rightKnee, rightPaint);
     drawLine(canvas, rightKnee, rightAnkle, rightPaint);
-    drawLine(canvas, rightWrist, rightThumb, rightPaint);
-    drawLine(canvas, rightWrist, rightPinky, rightPaint);
-    drawLine(canvas, rightWrist, rightIndex, rightPaint);
-    drawLine(canvas, rightIndex, rightPinky, rightPaint);
-    drawLine(canvas, rightAnkle, rightHeel, rightPaint);
-    drawLine(canvas, rightHeel, rightFootIndex, rightPaint);
 
     // Left Angles
     double leftElbowAngle = calculateAngles(leftWrist, leftElbow, leftShoulder);
     double leftShoulderAngle = calculateAngles(leftElbow, leftShoulder, leftHip);
     double leftHipAngle = calculateAngles(leftShoulder, leftHip, leftKnee);
-    double leftKneeAngle = calculateAngles(leftHip, leftKnee, leftHeel);
+    double leftKneeAngle = calculateAngles(leftHip, leftKnee, leftAnkle);
     System.out.println("Left elbow angle: " + leftElbowAngle);
     // Right Angles
     double rightElbowAngle = calculateAngles(rightWrist, rightElbow, rightShoulder);
     double rightShoulderAngle = calculateAngles(rightElbow, rightShoulder, rightHip);
     double rightHipAngle = calculateAngles(rightShoulder,rightHip, rightKnee);
-    double rightKneeAngle = calculateAngles(rightHip, rightKnee, rightHeel);
+    double rightKneeAngle = calculateAngles(rightHip, rightKnee, rightAnkle);
 
     List<PoseLandmark> anglesToVisualize = new ArrayList<>();
     anglesToVisualize.add(pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW));

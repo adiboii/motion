@@ -32,29 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.example.motion.image.ImageClassificationActivity"
-            android:screenOrientation="userPortrait" />
-        <activity
-            android:name="com.example.motion.image.FlowerIdentificationActivity"
-            android:screenOrientation="userPortrait" />
-        <activity
-            android:name="com.example.motion.object.ObjectDetectionActivity"
-            android:screenOrientation="userPortrait" />
-        <activity
-            android:name="com.example.motion.object.FaceDetectionActivity"
-            android:screenOrientation="userPortrait" />
-        <activity
-            android:name="com.example.motion.audio.AudioClassificationActivity"
-            android:screenOrientation="userPortrait" />
-        <activity
-            android:name="com.example.motion.audio.BirdSoundDetectorActivity"
-            android:screenOrientation="userPortrait" />
-        <activity android:name="com.example.motion.text.SpamTextDetectionActivity"
-            android:screenOrientation="userPortrait" />
-
-        <activity android:name="com.example.motion.object.DriverDrowsinessDetectionActivity"
-            android:screenOrientation="userPortrait" />
 
         <activity android:name="com.example.motion.object.PoseDetectionActivity"
             android:screenOrientation="userPortrait" />
