@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mlseriesdemonstrator">
+    package="com.example.motion">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -25,7 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MLSeriesDemonstrator">
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity android:name="com.example.motion.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,30 +33,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".image.ImageClassificationActivity"
+            android:name="com.example.motion.image.ImageClassificationActivity"
             android:screenOrientation="userPortrait" />
         <activity
-            android:name=".image.FlowerIdentificationActivity"
+            android:name="com.example.motion.image.FlowerIdentificationActivity"
             android:screenOrientation="userPortrait" />
         <activity
-            android:name=".object.ObjectDetectionActivity"
+            android:name="com.example.motion.object.ObjectDetectionActivity"
             android:screenOrientation="userPortrait" />
         <activity
-            android:name=".object.FaceDetectionActivity"
+            android:name="com.example.motion.object.FaceDetectionActivity"
             android:screenOrientation="userPortrait" />
         <activity
-            android:name=".audio.AudioClassificationActivity"
+            android:name="com.example.motion.audio.AudioClassificationActivity"
             android:screenOrientation="userPortrait" />
         <activity
-            android:name=".audio.BirdSoundDetectorActivity"
+            android:name="com.example.motion.audio.BirdSoundDetectorActivity"
             android:screenOrientation="userPortrait" />
-        <activity android:name=".text.SpamTextDetectionActivity"
+        <activity android:name="com.example.motion.text.SpamTextDetectionActivity"
             android:screenOrientation="userPortrait" />
 
-        <activity android:name=".object.DriverDrowsinessDetectionActivity"
+        <activity android:name="com.example.motion.object.DriverDrowsinessDetectionActivity"
             android:screenOrientation="userPortrait" />
 
-        <activity android:name=".object.PoseDetectionActivity"
+        <activity android:name="com.example.motion.object.PoseDetectionActivity"
             android:screenOrientation="userPortrait" />
 
         <!-- make sure within the application tag, otherwise app will crash with XmlResourceParser errors -->
