@@ -142,18 +142,17 @@ public class PoseClassifierProcessor {
     }
 
 
-    for(PoseLandmark landmark : landmarks){
-      if(landmark == null){
-        result.add("Please make sure all body parts are detected");
-        allPartsDetected = false;
-      }else{
-        continue;
-      }
-    }
 
+    //TODO: fix not all body parts can be seen bug
     // Add maxConfidence class of current frame to result if pose is found.
-    if (!pose.getAllPoseLandmarks().isEmpty() && allPartsDetected) {
-      String maxConfidenceClass = classification.getMaxConfidenceClass();
+    if (!pose.getAllPoseLandmarks().isEmpty()) {
+      String maxConfidenceClass = "";
+//      if(!allPartsDetected){
+//        maxConfidenceClass = "Please make sure all body parts are detected";
+//      }else{
+        maxConfidenceClass = classification.getMaxConfidenceClass();
+      //}
+
       String maxConfidenceClassResult = String.format(
           Locale.US,
           "%s : %.2f confidence",

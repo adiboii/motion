@@ -34,7 +34,7 @@
         </activity>
 
         <activity android:name="com.example.motion.object.PoseDetectionActivity"
-            android:screenOrientation="userPortrait" />
+            android:screenOrientation="portrait" />
 
         <!-- make sure within the application tag, otherwise app will crash with XmlResourceParser errors -->
         <provider

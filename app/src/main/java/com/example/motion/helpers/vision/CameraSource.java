@@ -50,8 +50,10 @@ public class CameraSource {
   public static final int CAMERA_FACING_FRONT = CameraInfo.CAMERA_FACING_FRONT;
 
   public static final int IMAGE_FORMAT = ImageFormat.NV21;
-  public static final int DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH = 480;
-  public static final int DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT = 360;
+  public static final int DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH = 1080;
+  public static final int DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT = 1920;
+//  public static final int DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH = 1080;
+//  public static final int DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT = 1920;
 
   private static final String TAG = "MIDemoApp:CameraSource";
 
@@ -72,7 +74,7 @@ public class CameraSource {
 
   private Camera camera;
 
-  private int facing = CAMERA_FACING_BACK;
+  private int facing = CAMERA_FACING_FRONT;
 
   /** Rotation of the device, and thus the associated preview images captured from the device. */
   private int rotationDegrees;
@@ -112,6 +114,7 @@ public class CameraSource {
   private final IdentityHashMap<byte[], ByteBuffer> bytesToByteBuffer = new IdentityHashMap<>();
 
   public CameraSource(Activity activity, GraphicOverlay overlay) {
+
     this.activity = activity;
     graphicOverlay = overlay;
     graphicOverlay.clear();
@@ -147,6 +150,7 @@ public class CameraSource {
     }
 
     camera = createCamera();
+    camera.setDisplayOrientation(0);
     dummySurfaceTexture = new SurfaceTexture(DUMMY_TEXTURE_NAME);
     camera.setPreviewTexture(dummySurfaceTexture);
     camera.startPreview();
@@ -503,10 +507,10 @@ public class CameraSource {
 
     int displayAngle;
     if (cameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT) {
-      this.rotationDegrees = (cameraInfo.orientation + degrees) % 360;
+      this.rotationDegrees = 270;
       displayAngle = (360 - this.rotationDegrees) % 360; // compensate for it being mirrored
     } else { // back-facing
-      this.rotationDegrees = (cameraInfo.orientation - degrees + 360) % 360;
+      this.rotationDegrees = 270;
       displayAngle = this.rotationDegrees;
     }
     Log.d(TAG, "Display rotation is: " + rotation);

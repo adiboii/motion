@@ -244,17 +244,23 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
                             lastPoint.getPosition().x - midPoint.getPosition().x)
                             - Math.atan2(firstPoint.getPosition().y - midPoint.getPosition().y,
                             firstPoint.getPosition().x - midPoint.getPosition().x));
+
+    System.out.println("First point x: " + firstPoint.getPosition().x);
+    System.out.println("First point y: " + firstPoint.getPosition().y);
     result = Math.abs(result); // Angle should never be negative
     if (result > 180) {
       result = (360.0 - result); // Always get the acute representation of the angle
     }
+    System.out.println("Result: " + result);
     return result;
+
   }
 
   void drawPoint(Canvas canvas, PoseLandmark landmark, Paint paint) {
     PointF3D point = landmark.getPosition3D();
     maybeUpdatePaintColor(paint, canvas, point.getZ());
     canvas.drawCircle(translateX(point.getX()), translateY(point.getY()), DOT_RADIUS, paint);
+    canvas.drawCircle(0, 50, DOT_RADIUS, paint);
   }
 
   void drawLine(Canvas canvas, PoseLandmark startLandmark, PoseLandmark endLandmark, Paint paint) {

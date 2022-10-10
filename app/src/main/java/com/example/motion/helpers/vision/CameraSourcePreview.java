@@ -46,6 +46,7 @@ public class CameraSourcePreview extends ViewGroup {
 
     surfaceView = new SurfaceView(context);
     surfaceView.getHolder().addCallback(new SurfaceCallback());
+
     addView(surfaceView);
   }
 
@@ -85,15 +86,17 @@ public class CameraSourcePreview extends ViewGroup {
 
       if (overlay != null) {
         Size size = cameraSource.getPreviewSize();
+        System.out.println("Size:" + size);
+
         int min = Math.min(size.getWidth(), size.getHeight());
         int max = Math.max(size.getWidth(), size.getHeight());
-        boolean isImageFlipped = cameraSource.getCameraFacing() == CameraSource.CAMERA_FACING_FRONT;
+        boolean isImageFlipped = cameraSource.getCameraFacing() == CameraSource.CAMERA_FACING_BACK;
         if (isPortraitMode()) {
           // Swap width and height sizes when in portrait, since it will be rotated by 90 degrees.
           // The camera preview and the image being processed have the same size.
-          overlay.setImageSourceInfo(min, max, isImageFlipped);
-        } else {
           overlay.setImageSourceInfo(max, min, isImageFlipped);
+        } else {
+          overlay.setImageSourceInfo(min, max, isImageFlipped);
         }
         overlay.clear();
       }
@@ -120,40 +123,100 @@ public class CameraSourcePreview extends ViewGroup {
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
   }
+//
+//  @Override
+//  protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+//    int width = 1280;
+//    int height = 960;
+//    if (cameraSource != null) {
+//      Size size = cameraSource.getPreviewSize();
+//      if (size != null) {
+//        width = size.getWidth();
+//        height = size.getHeight();
+//      }
+//    }
+//    System.out.println("Height: " + height + "\nWidth: " + width);
+//    // Swap width and height sizes when in portrait, since it will be rotated 90 degrees
+//    if (isPortraitMode()) {
+//      int tmp = width;
+//      width = height;
+//      height = tmp;
+//    }
+//
+//    float previewAspectRatio = (float) width / height;
+//    int layoutWidth = right - left;
+//    int layoutHeight = bottom - top;
+//    float layoutAspectRatio = (float) layoutWidth / layoutHeight;
+//    if (previewAspectRatio > layoutAspectRatio) {
+//      // The preview input is wider than the layout area. Fit the layout height and crop
+//      // the preview input horizontally while keep the center.
+//      int horizontalOffset = (int) (previewAspectRatio * layoutHeight - layoutWidth) / 2;
+//      surfaceView.layout(-horizontalOffset, 0, layoutWidth + horizontalOffset, layoutHeight);
+//    } else {
+//      // The preview input is taller than the layout area. Fit the layout width and crop the preview
+//      // input vertically while keep the center.
+//      int verticalOffset = (int) (layoutWidth / previewAspectRatio - layoutHeight) / 2;
+//      surfaceView.layout(0, -verticalOffset, layoutWidth, layoutHeight + verticalOffset);
+//    }
+//  }
 
   @Override
   protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-    int width = 320;
-    int height = 240;
+    int previewWidth = 320;
+    int previewHeight = 240;
     if (cameraSource != null) {
       Size size = cameraSource.getPreviewSize();
       if (size != null) {
-        width = size.getWidth();
-        height = size.getHeight();
+        previewWidth = size.getWidth();
+        previewHeight = size.getHeight();
       }
     }
 
+
+
     // Swap width and height sizes when in portrait, since it will be rotated 90 degrees
     if (isPortraitMode()) {
-      int tmp = width;
-      width = height;
-      height = tmp;
+      int tmp = previewHeight;
+      previewHeight = previewWidth;
+      previewWidth = tmp;
     }
 
-    float previewAspectRatio = (float) width / height;
-    int layoutWidth = right - left;
-    int layoutHeight = bottom - top;
-    float layoutAspectRatio = (float) layoutWidth / layoutHeight;
-    if (previewAspectRatio > layoutAspectRatio) {
-      // The preview input is wider than the layout area. Fit the layout height and crop
-      // the preview input horizontally while keep the center.
-      int horizontalOffset = (int) (previewAspectRatio * layoutHeight - layoutWidth) / 2;
-      surfaceView.layout(-horizontalOffset, 0, layoutWidth + horizontalOffset, layoutHeight);
+    final int viewWidth = right - left;
+    final int viewHeight = bottom - top;
+
+    int childWidth;
+    int childHeight;
+    int childXOffset = 0;
+    int childYOffset = 0;
+    float widthRatio = (float) viewWidth / (float) previewWidth;
+    float heightRatio = (float) viewHeight / (float) previewHeight;
+
+    // To fill the view with the camera preview, while also preserving the correct aspect ratio,
+    // it is usually necessary to slightly oversize the child and to crop off portions along one
+    // of the dimensions.  We scale up based on the dimension requiring the most correction, and
+    // compute a crop offset for the other dimension.
+    if (widthRatio > heightRatio) {
+      childWidth = viewWidth;
+      childHeight = (int) ((float) previewHeight * widthRatio);
+      childYOffset = (childHeight - viewHeight) / 2;
     } else {
-      // The preview input is taller than the layout area. Fit the layout width and crop the preview
-      // input vertically while keep the center.
-      int verticalOffset = (int) (layoutWidth / previewAspectRatio - layoutHeight) / 2;
-      surfaceView.layout(0, -verticalOffset, layoutWidth, layoutHeight + verticalOffset);
+      childWidth = (int) ((float) previewWidth * heightRatio);
+      childHeight = viewHeight;
+      childXOffset = (childWidth - viewWidth) / 2;
+    }
+
+    for (int i = 0; i < getChildCount(); ++i) {
+      // One dimension will be cropped.  We shift child over or up by this offset and adjust
+      // the size to maintain the proper aspect ratio.
+      getChildAt(i).layout(
+              -1 * childXOffset, -1 * childYOffset,
+              childWidth - childXOffset, childHeight - childYOffset);
+    }
+
+    try {
+      startIfReady();
+    } catch (IOException e) {
+      Log.e(TAG, "Could not start camera source.", e);
     }
   }
 
