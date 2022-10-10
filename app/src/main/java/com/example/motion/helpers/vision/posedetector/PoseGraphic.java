@@ -238,20 +238,25 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
 
 
   double calculateAngles(PoseLandmark firstPoint, PoseLandmark midPoint, PoseLandmark lastPoint){
-    double result =
-            Math.toDegrees(
-                    Math.atan2(lastPoint.getPosition().y - midPoint.getPosition().y,
-                            lastPoint.getPosition().x - midPoint.getPosition().x)
-                            - Math.atan2(firstPoint.getPosition().y - midPoint.getPosition().y,
-                            firstPoint.getPosition().x - midPoint.getPosition().x));
+    double fpX = firstPoint.getPosition().x;
+    double fpY = firstPoint.getPosition().y;
+    double mpX = midPoint.getPosition().x;
+    double mpY = midPoint.getPosition().y;
+    double lpX = lastPoint.getPosition().x;
+    double lpY = lastPoint.getPosition().y;
+    Calculations solve = new Calculations();
 
-    System.out.println("First point x: " + firstPoint.getPosition().x);
-    System.out.println("First point y: " + firstPoint.getPosition().y);
-    result = Math.abs(result); // Angle should never be negative
-    if (result > 180) {
-      result = (360.0 - result); // Always get the acute representation of the angle
-    }
-    System.out.println("Result: " + result);
+    double result = solve.calculateAngles(fpX,fpY,mpX,mpY,lpX,lpY);
+//    double result =
+//            Math.toDegrees(
+//                    Math.atan2(lastPoint.getPosition().y - midPoint.getPosition().y,
+//                            lastPoint.getPosition().x - midPoint.getPosition().x)
+//                            - Math.atan2(firstPoint.getPosition().y - midPoint.getPosition().y,
+//                            firstPoint.getPosition().x - midPoint.getPosition().x));
+//    result = Math.abs(result); // Angle should never be negative
+//    if (result > 180) {
+//      result = (360.0 - result); // Always get the acute representation of the angle
+//    }
     return result;
 
   }
