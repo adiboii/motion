@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Automatically redirects to Camera Screen
         Intent intent = new Intent(this, PoseDetectionActivity.class);
         startActivity(intent);
     }

@@ -38,34 +38,16 @@ import java.util.concurrent.Executors;
 /** A processor to run pose detector. */
 public class PoseDetectorProcessor
     extends VisionProcessorBase<PoseDetectorProcessor.PoseWithClassification> {
+  // Attributes
   private static final String TAG = "PoseDetectorProcessor";
-
   private final PoseDetector detector;
   private final boolean runClassification;
   private final boolean isStreamMode;
   private final Context context;
   private final Executor classificationExecutor;
-
   private PoseClassifierProcessor poseClassifierProcessor;
-  /** Internal class to hold Pose and classification results. */
-  protected static class PoseWithClassification {
-    private final Pose pose;
-    private final List<String> classificationResult;
 
-    public PoseWithClassification(Pose pose, List<String> classificationResult) {
-      this.pose = pose;
-      this.classificationResult = classificationResult;
-    }
-
-    public Pose getPose() {
-      return pose;
-    }
-
-    public List<String> getClassificationResult() {
-      return classificationResult;
-    }
-  }
-
+  // Constructors
   public PoseDetectorProcessor(
       Context context,
       PoseDetectorOptionsBase options,
@@ -79,12 +61,17 @@ public class PoseDetectorProcessor
     classificationExecutor = Executors.newSingleThreadExecutor();
   }
 
+  // Pre-defined Methods
   @Override
   public void stop() {
     super.stop();
     detector.close();
   }
 
+  @Override
+  protected void onFailure(@NonNull Exception e) {
+    Log.e(TAG, "Pose detection failed!", e);
+  }
 
   @Override
   protected Task<PoseWithClassification> detectInImage(InputImage image) {
@@ -138,14 +125,32 @@ public class PoseDetectorProcessor
             poseWithClassification.pose));
   }
 
-  @Override
-  protected void onFailure(@NonNull Exception e) {
-    Log.e(TAG, "Pose detection failed!", e);
-  }
+
 
   @Override
   protected boolean isMlImageEnabled(Context context) {
     // Use MlImage in Pose Detection by default, change it to OFF to switch to InputImage.
     return true;
+  }
+
+  /** Internal class to hold Pose and classification results. */
+  protected static class PoseWithClassification {
+    // Attributes
+    private final Pose pose;
+    private final List<String> classificationResult;
+
+    // Constructors
+    public PoseWithClassification(Pose pose, List<String> classificationResult) {
+      this.pose = pose;
+      this.classificationResult = classificationResult;
+    }
+
+    public Pose getPose() {
+      return pose;
+    }
+
+    public List<String> getClassificationResult() {
+      return classificationResult;
+    }
   }
 }
