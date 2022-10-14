@@ -41,12 +41,7 @@ public class PoseDetectorProcessor
   private static final String TAG = "PoseDetectorProcessor";
 
   private final PoseDetector detector;
-
-  private final boolean showInFrameLikelihood;
-  private final boolean visualizeZ;
-  private final boolean rescaleZForVisualization;
   private final boolean runClassification;
-  private final boolean visualizeAngles;
   private final boolean isStreamMode;
   private final Context context;
   private final Executor classificationExecutor;
@@ -74,19 +69,11 @@ public class PoseDetectorProcessor
   public PoseDetectorProcessor(
       Context context,
       PoseDetectorOptionsBase options,
-      boolean showInFrameLikelihood,
-      boolean visualizeZ,
-      boolean rescaleZForVisualization,
       boolean runClassification,
-      boolean visualizeAngles,
       boolean isStreamMode) {
     super(context);
-    this.showInFrameLikelihood = showInFrameLikelihood;
-    this.visualizeZ = visualizeZ;
-    this.rescaleZForVisualization = rescaleZForVisualization;
     detector = PoseDetection.getClient(options);
     this.runClassification = runClassification;
-    this.visualizeAngles = visualizeAngles;
     this.isStreamMode = isStreamMode;
     this.context = context;
     classificationExecutor = Executors.newSingleThreadExecutor();
@@ -148,12 +135,7 @@ public class PoseDetectorProcessor
     graphicOverlay.add(
         new PoseGraphic(
             graphicOverlay,
-            poseWithClassification.pose,
-            showInFrameLikelihood,
-            visualizeZ,
-            rescaleZForVisualization,
-            visualizeAngles,
-            poseWithClassification.classificationResult));
+            poseWithClassification.pose));
   }
 
   @Override

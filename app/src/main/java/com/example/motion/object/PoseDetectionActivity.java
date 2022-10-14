@@ -22,10 +22,6 @@ public class PoseDetectionActivity extends MLVideoHelperActivity {
         cameraSource.setMachineLearningFrameProcessor(new PoseDetectorProcessor(
                 this,
                 options,
-                false,
-                false,
-                false,
-                true,
                 true,
                 true)
         );
