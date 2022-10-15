@@ -17,12 +17,15 @@ import com.example.motion.helpers.vision.GraphicOverlay;
 import java.io.IOException;
 
 public abstract class MLVideoHelperActivity extends AppCompatActivity {
+    // Attributes with predefined classes
+    private GraphicOverlay graphicOverlay;
+    protected CameraSource cameraSource;
 
+    // Attributes with user-defined classes
     private static final int REQUEST_CAMERA = 1001;
     private static final String TAG = "MLVideoHelperActivity";
     private CameraSourcePreview preview;
-    private GraphicOverlay graphicOverlay;
-    protected CameraSource cameraSource;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +35,7 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
         preview = findViewById(R.id.preview_view);
         graphicOverlay = findViewById(R.id.graphic_overlay);
 
+        // Requests permission to access the device's camera
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
         } else {
@@ -40,10 +44,10 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
         }
     }
 
+    // Pre-defined Methods
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if (cameraSource != null) {
             cameraSource.release();
         }

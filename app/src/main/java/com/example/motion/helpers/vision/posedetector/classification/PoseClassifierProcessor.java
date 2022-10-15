@@ -33,9 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Accepts a stream of {@link Pose} for classification and Rep counting.
- */
+
+// Accepts a stream of Poses for classification
 public class PoseClassifierProcessor {
   private static final String TAG = "PoseClassifierProcessor";
   private static final String POSE_SAMPLES_FILE = "pose/yoga_poses.csv";

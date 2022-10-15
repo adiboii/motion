@@ -28,6 +28,7 @@ import java.io.IOException;
 
 /** Preview the camera image in the screen. */
 public class CameraSourcePreview extends ViewGroup {
+  // Attributes with Predefined Classes
   private static final String TAG = "MIDemoApp:Preview";
 
   private final Context context;
@@ -171,8 +172,6 @@ public class CameraSourcePreview extends ViewGroup {
         previewHeight = size.getHeight();
       }
     }
-
-
 
     // Swap width and height sizes when in portrait, since it will be rotated 90 degrees
     if (isPortraitMode()) {
