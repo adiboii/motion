@@ -19,11 +19,7 @@ public class PoseDetectionActivity extends MLVideoHelperActivity {
         AccuratePoseDetectorOptions options = new AccuratePoseDetectorOptions.Builder()
                 .setDetectorMode(AccuratePoseDetectorOptions.STREAM_MODE)
                 .build();
-        cameraSource.setMachineLearningFrameProcessor(new PoseDetectorProcessor(
-                this,
-                options,
-                true,
-                true)
-        );
+        PoseDetectorProcessor poseDetectorProcessor = new PoseDetectorProcessor(this, options, true, true);
+        cameraSource.setMachineLearningFrameProcessor(poseDetectorProcessor);
     }
 }
