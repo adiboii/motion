@@ -3,11 +3,12 @@ package com.example.motion.helpers;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,12 +19,9 @@ import com.example.motion.R;
 import com.example.motion.helpers.vision.CameraSource;
 import com.example.motion.helpers.vision.CameraSourcePreview;
 import com.example.motion.helpers.vision.GraphicOverlay;
-import com.example.motion.helpers.vision.posedetector.PoseDetectorProcessor;
 
 import java.io.IOException;
 import java.util.List;
-
-import io.github.muddz.styleabletoast.StyleableToast;
 
 public abstract class MLVideoHelperActivity extends AppCompatActivity {
     // Attributes with predefined classes
@@ -34,6 +32,16 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA = 1001;
     private static final String TAG = "MLVideoHelperActivity";
     private CameraSourcePreview preview;
+    private static boolean selectedPose = false;
+    private CountDownTimer countDownTimer;
+
+    // Views
+    private ImageView icon;
+    private TextView prompt;
+    private TextView timer;
+    private ImageButton warriorButton;
+    private ImageButton goddessButton;
+    private ImageButton treeButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,9 +50,14 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
 
         preview = findViewById(R.id.preview_view);
         graphicOverlay = findViewById(R.id.graphic_overlay);
-        ImageButton warriorBtn = findViewById(R.id.btn_warrior2);
-        ImageButton goddessBtn = findViewById(R.id.btn_goddess);
-        ImageButton treeBtn = findViewById(R.id.btn_tree);
+
+        // Connect Views (Activity and XML)
+        icon = findViewById(R.id.iconID);
+        prompt = findViewById(R.id.prompt);
+        timer = findViewById(R.id.textTimer);
+        warriorButton = findViewById(R.id.btn_warrior2);
+        goddessButton = findViewById(R.id.btn_goddess);
+        treeButton = findViewById(R.id.btn_tree);
 
             // Requests permission to access the device's camera
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -52,41 +65,72 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
         } else {
             initSource();
             startCameraSource();
-            clickPoseBtn(warriorBtn, goddessBtn, treeBtn);
-
+            clickPoseBtn();
         }
     }
 
+    // Helper Functions
+    public void selectPose(MLVideoHelperActivity context, ImageButton poseSelected, ImageButton secondPose, ImageButton thirdPose) {
+        if(selectedPose) {
+            timer.setVisibility(View.INVISIBLE);
+            icon.setImageResource(R.drawable.warning_icon);
+            countDownTimer.cancel();
+            prompt.setText("Select a pose");
+            poseSelected.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
+            secondPose.setEnabled(true);
+            thirdPose.setEnabled(true);
+            selectedPose = false;
+        } else {
+            timer.setVisibility(View.VISIBLE);
+            startCountdown();
+            if(poseSelected == warriorButton) {
+                prompt.setText("Perform the Warrior II Pose");
+            } else if(poseSelected == goddessButton) {
+                prompt.setText("Perform the Goddess Pose");
+            } else if(poseSelected == treeButton) {
+                prompt.setText("Perform the Tree Pose");
+            }
+            poseSelected.setBackground(ContextCompat.getDrawable(context, R.drawable.button_pressed));
+            secondPose.setEnabled(false);
+            thirdPose.setEnabled(false);
+            selectedPose = true;
+        }
+    }
+
+    public void startCountdown() {
+        icon.setImageResource(R.drawable.record_icon);
+        countDownTimer = new CountDownTimer(16000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                timer.setText("" + millisUntilFinished / 1000);
+                // logic to set the EditText could go here
+            }
+            public void onFinish() {
+                timer.setText("0");
+            }
+        }.start();
+    }
+
     //Actions to do for the buttons
-    private void clickPoseBtn(ImageButton warriorBtn, ImageButton goddessBtn, ImageButton treeBtn) {
+    private void clickPoseBtn() {
         MLVideoHelperActivity context = MLVideoHelperActivity.this;
-        warriorBtn.setOnClickListener(new View.OnClickListener() {
+        warriorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StyleableToast.makeText(context, "Please perform Warrior Pose", Toast.LENGTH_SHORT, R.style.mytoast).show();
-                warriorBtn.setBackground(ContextCompat.getDrawable(context,R.drawable.button_pressed));
-                goddessBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
-                treeBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
+                selectPose(context, warriorButton, goddessButton, treeButton);
             }
         });
 
-        goddessBtn.setOnClickListener(new View.OnClickListener() {
+        goddessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StyleableToast.makeText(context, "Please perform Goddess Pose", Toast.LENGTH_SHORT, R.style.mytoast).show();
-                goddessBtn.setBackground(ContextCompat.getDrawable(context,R.drawable.button_pressed));
-                warriorBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
-                treeBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
+                selectPose(context, goddessButton, warriorButton, treeButton);
             }
         });
 
-        treeBtn.setOnClickListener(new View.OnClickListener() {
+        treeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StyleableToast.makeText(context, "Please perform Tree Pose", Toast.LENGTH_SHORT, R.style.mytoast).show();
-                treeBtn.setBackground(ContextCompat.getDrawable(context,R.drawable.button_pressed));
-                warriorBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
-                goddessBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
+                selectPose(context, treeButton, warriorButton, goddessButton);
             }
         });
     }
@@ -140,9 +184,5 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
                 cameraSource = null;
             }
         }
-    }
-
-    public void clickSelectedPose(View view) {
-        StyleableToast.makeText(this, "Please perform selected pose!", Toast.LENGTH_SHORT, R.style.mytoast).show();
     }
 }

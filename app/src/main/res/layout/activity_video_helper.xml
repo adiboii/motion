@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </com.example.motion.helpers.vision.CameraSourcePreview>
 
     <com.example.motion.helpers.vision.GraphicOverlay
         android:id="@+id/graphic_overlay"
@@ -19,6 +22,45 @@
         app:layout_constraintLeft_toLeftOf="@id/preview_view"
         app:layout_constraintRight_toRightOf="@id/preview_view"
         app:layout_constraintTop_toTopOf="@id/preview_view" />
+
+    <TextView
+        android:id="@+id/prompt"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/prompt"
+        android:gravity="center"
+        android:text="Select a pose"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/preview_view"
+        tools:text="Select a pose" />
+
+    <TextView
+        android:id="@+id/textTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="15"
+        android:textColor="@color/black"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/prompt"
+        app:layout_constraintEnd_toEndOf="@+id/prompt"
+        app:layout_constraintTop_toTopOf="@+id/prompt"
+        tools:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/iconID"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/prompt"
+        app:layout_constraintStart_toStartOf="@+id/prompt"
+        app:layout_constraintTop_toTopOf="@+id/prompt"
+        app:srcCompat="@drawable/warning_icon" />
 
     <LinearLayout
         android:id="@id/control"
@@ -35,8 +77,9 @@
             android:layout_weight="1"/>
 
         <ImageButton
+            android:padding="5dp"
             android:id="@+id/btn_warrior2"
-            android:layout_width="70dp"
+            android:layout_width="50dp"
             android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@drawable/button"
@@ -50,8 +93,9 @@
             android:layout_weight="1"/>
 
         <ImageButton
+            android:padding="7dp"
             android:id="@+id/btn_goddess"
-            android:layout_width="70dp"
+            android:layout_width="50dp"
             android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@drawable/button"
@@ -65,8 +109,9 @@
             android:layout_weight="1"/>
 
         <ImageButton
+            android:padding="5dp"
             android:id="@+id/btn_tree"
-            android:layout_width="70dp"
+            android:layout_width="50dp"
             android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@drawable/button"
