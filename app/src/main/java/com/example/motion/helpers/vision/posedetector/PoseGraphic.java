@@ -34,7 +34,7 @@ import java.util.List;
 /** Draw the detected pose in preview. */
 public class PoseGraphic extends GraphicOverlay.Graphic {
   // Attributes
-  private static final float DOT_RADIUS = 10.0f;
+  private static final float DOT_RADIUS = 20.0f;
   private static final float STROKE_WIDTH = 8.0f;
   private static final float POSE_CLASSIFICATION_TEXT_SIZE = 60.0f;
   private final Pose pose;
