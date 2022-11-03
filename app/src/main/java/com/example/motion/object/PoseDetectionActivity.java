@@ -1,9 +1,9 @@
 package com.example.motion.object;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.motion.helpers.MLVideoHelperActivity;
-import com.example.motion.helpers.PoseClassificationChecker;
 import com.example.motion.helpers.vision.posedetector.PoseDetectorProcessor;
 import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions;
 
@@ -21,7 +21,8 @@ public class PoseDetectionActivity extends MLVideoHelperActivity {
         AccuratePoseDetectorOptions options = new AccuratePoseDetectorOptions.Builder()
                 .setDetectorMode(AccuratePoseDetectorOptions.STREAM_MODE)
                 .build();
-        PoseDetectorProcessor poseDetectorProcessor = new PoseDetectorProcessor(this, options, true, true, super.poseClassificationChecker);
+        PoseDetectorProcessor poseDetectorProcessor = new PoseDetectorProcessor(this, options, true, true, super.motionProcessor);
         cameraSource.setMachineLearningFrameProcessor(poseDetectorProcessor);
     }
+
 }

@@ -1,11 +1,18 @@
 package com.example.motion.helpers;
 
-public class PoseClassificationChecker {
+public class MotionProcessor {
+
+
+
     String selectedPose;
     boolean isSelectedPose;
-    public PoseClassificationChecker(){}
+    final public MotionListener listener;
+    public MotionProcessor(MotionListener listener){
+        this.listener = listener;
+    }
 
-    public boolean isSelectedPose(String pose){
+    // Methods
+    public boolean doingSelectedPose(String pose){
 
         if(pose.equals(selectedPose))
             isSelectedPose = true;
@@ -23,7 +30,4 @@ public class PoseClassificationChecker {
         return selectedPose;
     }
 
-    public boolean startRecord(){
-        return isSelectedPose;
-    }
 }
