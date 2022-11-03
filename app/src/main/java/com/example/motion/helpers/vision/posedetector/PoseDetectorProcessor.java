@@ -20,8 +20,7 @@ import android.content.Context;
 import android.util.Log;
 import androidx.annotation.NonNull;
 
-import com.example.motion.R;
-import com.example.motion.helpers.PoseClassificationChecker;
+import com.example.motion.helpers.MotionProcessor;
 import com.example.motion.helpers.vision.GraphicOverlay;
 import com.example.motion.helpers.vision.VisionProcessorBase;
 import com.example.motion.helpers.vision.posedetector.classification.PoseClassifierProcessor;
@@ -48,7 +47,7 @@ public class PoseDetectorProcessor
   private final Context context;
   private final Executor classificationExecutor;
   private PoseClassifierProcessor poseClassifierProcessor;
-  private final PoseClassificationChecker poseClassificationChecker;
+  private final MotionProcessor motionProcessor;
 
   // Constructors
   public PoseDetectorProcessor(
@@ -56,13 +55,13 @@ public class PoseDetectorProcessor
       PoseDetectorOptionsBase options,
       boolean runClassification,
       boolean isStreamMode,
-      PoseClassificationChecker poseClassificationChecker) {
+      MotionProcessor motionProcessor) {
     super(context);
     detector = PoseDetection.getClient(options);
     this.runClassification = runClassification;
     this.isStreamMode = isStreamMode;
     this.context = context;
-    this.poseClassificationChecker = poseClassificationChecker;
+    this.motionProcessor = motionProcessor;
     classificationExecutor = Executors.newSingleThreadExecutor();
   }
 
@@ -127,17 +126,18 @@ public class PoseDetectorProcessor
 
     
      System.out.println("Pose Made: " + poseWithClassification.classificationResult);
-     System.out.println("Selected Pose: " + poseClassificationChecker.getPose());
-     System.out.println("Is User Doing Selected Pose: " + poseClassificationChecker.isSelectedPose(poseWithClassification.getResult()));
+     System.out.println("Selected Pose: " + motionProcessor.getPose());
+     System.out.println("Is User Doing Selected Pose: " + motionProcessor.doingSelectedPose(poseWithClassification.getResult()));
+
+     motionProcessor.listener.onIsSelectedPose(motionProcessor.doingSelectedPose(poseWithClassification.getResult()));
 
     graphicOverlay.add(
         new PoseGraphic(
             graphicOverlay,
             poseWithClassification.pose,
-                poseWithClassification.classificationResult));
+                poseWithClassification.classificationResult,
+                motionProcessor.doingSelectedPose(poseWithClassification.getResult()) ));
   }
-
-
 
   @Override
   protected boolean isMlImageEnabled(Context context) {

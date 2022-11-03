@@ -43,16 +43,19 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   private final HashMap<Integer, PoseLandmark> essentialLandmarks;
   private final List<String> poseClassification;
   private final Paint classificationTextPaint;
+  private final boolean isDoingSelectedPose;
   // Constructors
   PoseGraphic(
       GraphicOverlay overlay,
       Pose pose,
-      List<String> poseClassification) {
+      List<String> poseClassification,
+      boolean isDoingSelectedPose) {
     super(overlay);
     this.pose = pose;
     this.poseSkeleton = new PoseSkeleton(pose);
     this.essentialLandmarks = poseSkeleton.getEssentialLandmarks();
     this.poseClassification = poseClassification;
+    this.isDoingSelectedPose = isDoingSelectedPose;
     classificationTextPaint = new Paint();
     classificationTextPaint.setColor(Color.WHITE);
     classificationTextPaint.setTextSize(POSE_CLASSIFICATION_TEXT_SIZE);
@@ -71,7 +74,7 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
       float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
               * (poseClassification.size() - i));
       canvas.drawText(
-              poseClassification.get(i),
+              String.format("Is doing selected pose: %s", isDoingSelectedPose),
               classificationX,
               classificationY,
               classificationTextPaint);
