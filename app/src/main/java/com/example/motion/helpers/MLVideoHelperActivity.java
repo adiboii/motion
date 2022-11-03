@@ -42,11 +42,17 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
     private ImageButton warriorButton;
     private ImageButton goddessButton;
     private ImageButton treeButton;
+    private ImageButton selectedButton;
+    public String pose;
+
+    // Classes
+    public PoseClassificationChecker poseClassificationChecker;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_helper);
+        poseClassificationChecker  = new PoseClassificationChecker();
 
         preview = findViewById(R.id.preview_view);
         graphicOverlay = findViewById(R.id.graphic_overlay);
@@ -71,30 +77,34 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
 
     // Helper Functions
     public void selectPose(MLVideoHelperActivity context, ImageButton poseSelected, ImageButton secondPose, ImageButton thirdPose) {
-        if(selectedPose) {
+
+        timer.setVisibility(View.VISIBLE);
+        //startCountdown();
+
+        if(poseSelected == warriorButton) {
+            prompt.setText("Performing Warrior II Pose: " + poseClassificationChecker.isSelectedPose);
+        } else if(poseSelected == goddessButton) {
+            prompt.setText("Perform the Goddess Pose");
+        } else if(poseSelected == treeButton) {
+            prompt.setText("Performing Tree Pose: " + poseClassificationChecker.isSelectedPose);
+        }
+
+
+        poseSelected.setBackground(ContextCompat.getDrawable(context, R.drawable.button_pressed));
+        secondPose.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
+        thirdPose.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
+        selectedButton = poseSelected;
+        selectedPose = true;
+    }
+
+    public void unselectPose(MLVideoHelperActivity context, ImageButton poseSelected, ImageButton secondPose, ImageButton thirdPose){
             timer.setVisibility(View.INVISIBLE);
             icon.setImageResource(R.drawable.warning_icon);
-            countDownTimer.cancel();
+            //countDownTimer.cancel();
             prompt.setText("Select a pose");
             poseSelected.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
-            secondPose.setEnabled(true);
-            thirdPose.setEnabled(true);
+            selectedButton = null;
             selectedPose = false;
-        } else {
-            timer.setVisibility(View.VISIBLE);
-            startCountdown();
-            if(poseSelected == warriorButton) {
-                prompt.setText("Perform the Warrior II Pose");
-            } else if(poseSelected == goddessButton) {
-                prompt.setText("Perform the Goddess Pose");
-            } else if(poseSelected == treeButton) {
-                prompt.setText("Perform the Tree Pose");
-            }
-            poseSelected.setBackground(ContextCompat.getDrawable(context, R.drawable.button_pressed));
-            secondPose.setEnabled(false);
-            thirdPose.setEnabled(false);
-            selectedPose = true;
-        }
     }
 
     public void startCountdown() {
@@ -116,21 +126,42 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
         warriorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectPose(context, warriorButton, goddessButton, treeButton);
+                if(selectedButton == warriorButton){
+                    unselectPose(context, warriorButton, goddessButton, treeButton);
+                    poseClassificationChecker.setSelectedPose("");
+                }else{
+                    selectPose(context, warriorButton, goddessButton, treeButton);
+                    poseClassificationChecker.setSelectedPose("warrior2");
+                }
+
             }
         });
 
         goddessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectPose(context, goddessButton, warriorButton, treeButton);
+                if(selectedButton == goddessButton){
+                    unselectPose(context, goddessButton, warriorButton, treeButton);
+                    poseClassificationChecker.setSelectedPose("");
+                }else{
+                    selectPose(context, goddessButton, warriorButton, treeButton);
+                    poseClassificationChecker.setSelectedPose("goddess");
+                }
+
             }
         });
 
         treeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectPose(context, treeButton, warriorButton, goddessButton);
+                if(selectedButton == treeButton){
+                    unselectPose(context, treeButton, warriorButton, goddessButton);
+                    poseClassificationChecker.setSelectedPose("");
+                }else{
+                    selectPose(context, treeButton, warriorButton, goddessButton);
+                    poseClassificationChecker.setSelectedPose("tree");
+                }
+
             }
         });
     }
