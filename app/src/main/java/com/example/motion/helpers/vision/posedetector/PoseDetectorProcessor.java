@@ -20,6 +20,8 @@ import android.content.Context;
 import android.util.Log;
 import androidx.annotation.NonNull;
 
+import com.example.motion.R;
+import com.example.motion.helpers.PoseClassificationChecker;
 import com.example.motion.helpers.vision.GraphicOverlay;
 import com.example.motion.helpers.vision.VisionProcessorBase;
 import com.example.motion.helpers.vision.posedetector.classification.PoseClassifierProcessor;
@@ -46,18 +48,21 @@ public class PoseDetectorProcessor
   private final Context context;
   private final Executor classificationExecutor;
   private PoseClassifierProcessor poseClassifierProcessor;
+  private final PoseClassificationChecker poseClassificationChecker;
 
   // Constructors
   public PoseDetectorProcessor(
       Context context,
       PoseDetectorOptionsBase options,
       boolean runClassification,
-      boolean isStreamMode) {
+      boolean isStreamMode,
+      PoseClassificationChecker poseClassificationChecker) {
     super(context);
     detector = PoseDetection.getClient(options);
     this.runClassification = runClassification;
     this.isStreamMode = isStreamMode;
     this.context = context;
+    this.poseClassificationChecker = poseClassificationChecker;
     classificationExecutor = Executors.newSingleThreadExecutor();
   }
 
@@ -108,7 +113,7 @@ public class PoseDetectorProcessor
                   poseClassifierProcessor = new PoseClassifierProcessor(context, isStreamMode);
                 }
                 classificationResult = poseClassifierProcessor.getPoseResult(pose);
-                System.out.println("Pose classification: " + classificationResult.get(classificationResult.size()-1));
+
               }
               return new PoseWithClassification(pose, classificationResult);
             });
@@ -119,6 +124,12 @@ public class PoseDetectorProcessor
   protected void onSuccess(
       @NonNull PoseWithClassification poseWithClassification,
       @NonNull GraphicOverlay graphicOverlay) {
+
+    
+     System.out.println("Pose Made: " + poseWithClassification.classificationResult);
+     System.out.println("Selected Pose: " + poseClassificationChecker.getPose());
+     System.out.println("Is User Doing Selected Pose: " + poseClassificationChecker.isSelectedPose(poseWithClassification.getResult()));
+
     graphicOverlay.add(
         new PoseGraphic(
             graphicOverlay,
@@ -151,6 +162,13 @@ public class PoseDetectorProcessor
 
     public List<String> getClassificationResult() {
       return classificationResult;
+    }
+
+    public String getResult(){
+      if(classificationResult.isEmpty())
+        return "null";
+      else
+        return classificationResult.get(classificationResult.size()-1);
     }
   }
 }

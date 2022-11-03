@@ -96,6 +96,7 @@ public class PoseClassifierProcessor {
     }
   }
 
+
   /**
    * Given a new {@link Pose} input, returns a list of formatted {@link String}s with Pose
    * classification results.
@@ -119,7 +120,7 @@ public class PoseClassifierProcessor {
 
       // Return early without updating repCounter if no pose found.
       if (pose.getAllPoseLandmarks().isEmpty()) {
-        result.add(lastRepResult);
+        //result.add(lastRepResult);
         return result;
       }
 
@@ -145,19 +146,24 @@ public class PoseClassifierProcessor {
     //TODO: fix not all body parts can be seen bug
     // Add maxConfidence class of current frame to result if pose is found.
     if (!pose.getAllPoseLandmarks().isEmpty()) {
-      String maxConfidenceClass = "";
+      String maxConfidenceClass = " ";
 //      if(!allPartsDetected){
 //        maxConfidenceClass = "Please make sure all body parts are detected";
 //      }else{
         maxConfidenceClass = classification.getMaxConfidenceClass();
       //}
 
+//      String maxConfidenceClassResult = String.format(
+//          Locale.US,
+//          "%s : %.2f confidence",
+//          maxConfidenceClass,
+//          classification.getClassConfidence(maxConfidenceClass)
+//              / poseClassifier.confidenceRange());
+
       String maxConfidenceClassResult = String.format(
-          Locale.US,
-          "%s : %.2f confidence",
-          maxConfidenceClass,
-          classification.getClassConfidence(maxConfidenceClass)
-              / poseClassifier.confidenceRange());
+              Locale.US,
+              "%s",
+              maxConfidenceClass);
       result.add(maxConfidenceClassResult);
     }
 
