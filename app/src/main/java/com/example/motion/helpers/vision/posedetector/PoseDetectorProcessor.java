@@ -122,7 +122,8 @@ public class PoseDetectorProcessor
     graphicOverlay.add(
         new PoseGraphic(
             graphicOverlay,
-            poseWithClassification.pose));
+            poseWithClassification.pose,
+                poseWithClassification.classificationResult));
   }
 
 

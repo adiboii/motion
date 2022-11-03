@@ -36,20 +36,27 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   // Attributes
   private static final float DOT_RADIUS = 10.0f;
   private static final float STROKE_WIDTH = 8.0f;
+  private static final float POSE_CLASSIFICATION_TEXT_SIZE = 60.0f;
   private final Pose pose;
   private final Paint whitePaint = new Paint();
   private final PoseSkeleton poseSkeleton;
   private final HashMap<Integer, PoseLandmark> essentialLandmarks;
-
+  private final List<String> poseClassification;
+  private final Paint classificationTextPaint;
   // Constructors
   PoseGraphic(
       GraphicOverlay overlay,
-      Pose pose) {
+      Pose pose,
+      List<String> poseClassification) {
     super(overlay);
     this.pose = pose;
     this.poseSkeleton = new PoseSkeleton(pose);
     this.essentialLandmarks = poseSkeleton.getEssentialLandmarks();
-
+    this.poseClassification = poseClassification;
+    classificationTextPaint = new Paint();
+    classificationTextPaint.setColor(Color.WHITE);
+    classificationTextPaint.setTextSize(POSE_CLASSIFICATION_TEXT_SIZE);
+    classificationTextPaint.setShadowLayer(5.0f, 0f, 0f, Color.BLACK);
     whitePaint.setStrokeWidth(STROKE_WIDTH);
     whitePaint.setColor(Color.WHITE);
   }
@@ -58,6 +65,19 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   public void draw(Canvas canvas) {
     if (poseSkeleton.getLandmarks().isEmpty())
       return;
+
+    float classificationX = POSE_CLASSIFICATION_TEXT_SIZE * 0.5f;
+    for (int i = 0; i < poseClassification.size(); i++) {
+      float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
+              * (poseClassification.size() - i));
+      canvas.drawText(
+              poseClassification.get(i),
+              classificationX,
+              classificationY,
+              classificationTextPaint);
+    }
+
+
     drawLandmarks(canvas);
     drawLandmarkConnections(canvas);
   }
