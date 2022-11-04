@@ -1,33 +1,39 @@
 package com.example.motion.helpers;
 
 public class MotionProcessor {
-
-
-
+    final public MotionListener listener;
     String selectedPose;
     boolean isSelectedPose;
-    final public MotionListener listener;
+
     public MotionProcessor(MotionListener listener){
         this.listener = listener;
     }
 
     // Methods
-    public boolean doingSelectedPose(String pose){
+    public boolean isDoingSelectedPose(String pose, double confidenceLevel){
 
-        if(pose.equals(selectedPose))
-            isSelectedPose = true;
-        else
-            isSelectedPose = false;
+        switch(pose){
+            case "warrior2" : isSelectedPose = checkPerformance(0.9999, confidenceLevel); break;
+            case "goddess" : isSelectedPose = checkPerformance(0.85, confidenceLevel); break;
+            case "tree" : isSelectedPose = checkPerformance(0.96, confidenceLevel); break;
+            default: isSelectedPose = false;
+        }
 
         return isSelectedPose;
     }
 
     public void setSelectedPose(String selectedPose){
+        System.out.println("User Selected Pose:" + selectedPose);
         this.selectedPose = selectedPose;
     }
 
-    public String getPose(){
+    public String getSelectedPose(){
         return selectedPose;
+    }
+
+    private boolean checkPerformance(double threshold, double confidenceLevel){
+        if(confidenceLevel >= threshold) return true;
+        return false;
     }
 
 }
