@@ -36,6 +36,7 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
     private CountDownTimer timerController;
     public String pose;
     private boolean countingDown = false;
+    private ImageButton selectedButton;
 
     // Views
     private TextView textPrompt;
@@ -45,18 +46,18 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
     private ImageButton buttonWarriorTwo;
     private ImageButton buttonGoddess;
     private ImageButton buttonTree;
-    private ImageButton selectedButton;
 
     // Objects
     public MotionProcessor motionProcessor;
 
+    // Activity's Life Cycle Functions
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_helper);
+        requestCameraPermission();
         connectToXML();
         initializeDisplay();
-
         // Motion Processor Listeners (event triggers)
         motionProcessor = new MotionProcessor(new MotionListener() {
             @Override
@@ -66,8 +67,27 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
                 }
             }
         });
+    }
 
-        // Requests permission to access the device's camera
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cameraSource != null) {
+            cameraSource.release();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            initSource();
+            startCameraSource();
+        }
+    }
+
+    // User-defined Functions
+    public void requestCameraPermission() {
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
         } else {
@@ -95,6 +115,7 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
         buttonGoddess.setBackground(ContextCompat.getDrawable(this, R.drawable.button_normal));
         buttonTree.setBackground(ContextCompat.getDrawable(this, R.drawable.button_normal));
     }
+
 
     // Helper Functions
     public void selectPose(MLVideoHelperActivity context, ImageButton poseSelected, ImageButton secondPose, ImageButton thirdPose) {
@@ -217,24 +238,7 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
         });
     }
 
-    // Pre-defined Methods
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (cameraSource != null) {
-            cameraSource.release();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            initSource();
-            startCameraSource();
-        }
-    }
-
+    // Pre-defined Camera Functions
     private void initSource() {
         if (cameraSource == null) {
             cameraSource = new CameraSource(this, graphicOverlay);
@@ -244,11 +248,6 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
 
     protected abstract void setProcessor();
 
-    /**
-     * Starts or restarts the camera source, if it exists. If the camera source doesn't exist yet
-     * (e.g., because onResume was called before the camera source was created), this will be called
-     * again when the camera source is created.
-     */
     private void startCameraSource() {
         if (cameraSource != null) {
             try {
