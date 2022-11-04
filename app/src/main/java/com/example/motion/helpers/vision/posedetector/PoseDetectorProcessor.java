@@ -91,7 +91,6 @@ public class PoseDetectorProcessor
                   poseClassifierProcessor = new PoseClassifierProcessor(context, isStreamMode);
                 }
                 classificationResult = poseClassifierProcessor.getPoseResult(pose);
-
               }
               return new PoseWithClassification(pose, classificationResult);
             });
@@ -112,7 +111,6 @@ public class PoseDetectorProcessor
                   poseClassifierProcessor = new PoseClassifierProcessor(context, isStreamMode);
                 }
                 classificationResult = poseClassifierProcessor.getPoseResult(pose);
-
               }
               return new PoseWithClassification(pose, classificationResult);
             });
@@ -124,19 +122,20 @@ public class PoseDetectorProcessor
       @NonNull PoseWithClassification poseWithClassification,
       @NonNull GraphicOverlay graphicOverlay) {
 
-    
-     System.out.println("Pose Made: " + poseWithClassification.classificationResult);
-     System.out.println("Selected Pose: " + motionProcessor.getPose());
-     System.out.println("Is User Doing Selected Pose: " + motionProcessor.doingSelectedPose(poseWithClassification.getResult()));
-
-     motionProcessor.listener.onIsSelectedPose(motionProcessor.doingSelectedPose(poseWithClassification.getResult()));
+    /**
+     * If pose is detected, call on listener to check
+     * if user is doing the selected pose.
+     * */
+    motionProcessor.listener.verifyUserPose(motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel));
 
     graphicOverlay.add(
-        new PoseGraphic(
+          new PoseGraphic(
             graphicOverlay,
             poseWithClassification.pose,
-                poseWithClassification.classificationResult,
-                motionProcessor.doingSelectedPose(poseWithClassification.getResult()) ));
+            // The two lines below are used for debugging purposes
+            // They shall be removed once development is done
+            poseWithClassification.classificationResult,
+            motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel)));
   }
 
   @Override

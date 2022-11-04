@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,45 +32,28 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
     private static final String TAG = "MLVideoHelperActivity";
     private CameraSourcePreview preview;
     private static boolean selectedPose = false;
-    boolean doingSelectedPose = false;
-    private CountDownTimer countDownTimer;
+    boolean doingSelectedPose;
+    private CountDownTimer timerController;
+    public String pose;
+    private boolean countingDown;
 
     // Views
     private ImageView icon;
     private TextView prompt;
     public TextView timer;
+    private TextView countdownTimer;
     private ImageButton warriorButton;
     private ImageButton goddessButton;
     private ImageButton treeButton;
     private ImageButton selectedButton;
-    public String pose;
-    private boolean countingDown = false;
 
-
-
-    // Classes
+    // Objects
     public MotionProcessor motionProcessor;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_helper);
-        motionProcessor = new MotionProcessor(new MotionListener() {
-            @Override
-            public void onIsSelectedPose(boolean doingSelectedPose) {
-                if(doingSelectedPose && !countingDown){
-                    poseDetected();
-                    timer.setVisibility(View.VISIBLE);
-                    startCountdown();
-                    countingDown = true;
-                }else if(!doingSelectedPose){
-
-                }
-            }
-        });
-        doingSelectedPose = false;
-        preview = findViewById(R.id.preview_view);
-        graphicOverlay = findViewById(R.id.graphic_overlay);
 
         // Connect Views (Activity and XML)
         icon = findViewById(R.id.iconID);
@@ -80,6 +62,30 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
         warriorButton = findViewById(R.id.btn_warrior2);
         goddessButton = findViewById(R.id.btn_goddess);
         treeButton = findViewById(R.id.btn_tree);
+        countdownTimer = findViewById(R.id.countdownTimerId);
+        countdownTimer.setVisibility(View.INVISIBLE);
+        preview = findViewById(R.id.preview_view);
+        graphicOverlay = findViewById(R.id.graphic_overlay);
+
+        // Instantiate variables
+        doingSelectedPose = false;
+        countingDown = false;
+
+        // Set button backgrounds for buttons
+        warriorButton.setBackground(ContextCompat.getDrawable(this, R.drawable.button_normal));
+        goddessButton.setBackground(ContextCompat.getDrawable(this, R.drawable.button_normal));
+        treeButton.setBackground(ContextCompat.getDrawable(this, R.drawable.button_normal));
+
+
+        // Motion Processor Listeners (event triggers)
+        motionProcessor = new MotionProcessor(new MotionListener() {
+            @Override
+            public void verifyUserPose(boolean isDoingSelectedPose) {
+                if(isDoingSelectedPose && !countingDown){
+                    startCountdown();
+                }
+            }
+        });
 
         // Requests permission to access the device's camera
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -94,6 +100,13 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
     // Helper Functions
     public void selectPose(MLVideoHelperActivity context, ImageButton poseSelected, ImageButton secondPose, ImageButton thirdPose) {
 
+        if(timerController != null){
+            countingDown = false;
+            timer.setVisibility(View.INVISIBLE);
+            timerController.cancel();
+        }
+
+        icon.setImageResource(R.drawable.warning_icon);
         if(poseSelected == warriorButton) {
             prompt.setText("Perform the Warrior II Pose");
         } else if(poseSelected == goddessButton) {
@@ -106,36 +119,22 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
         secondPose.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
         thirdPose.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
 
-        if(countDownTimer != null){
-            countingDown = false;
-            timer.setText("15");
-            timer.setVisibility(View.INVISIBLE);
-            countDownTimer.cancel();
-        }
-
         selectedButton = poseSelected;
         selectedPose = true;
     }
 
     public void unselectPose(MLVideoHelperActivity context, ImageButton poseSelected){
-        if(countDownTimer != null){
-            countDownTimer.cancel();
-            countingDown = false;
-        }
-
         timer.setVisibility(View.INVISIBLE);
-
-
-            icon.setImageResource(R.drawable.warning_icon);
-            prompt.setText("Select a pose");
-            poseSelected.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
-            selectedButton = null;
-            selectedPose = false;
+        icon.setImageResource(R.drawable.warning_icon);
+        prompt.setText("Select a pose");
+        poseSelected.setBackground(ContextCompat.getDrawable(context, R.drawable.button_normal));
+        selectedButton = null;
+        selectedPose = false;
     }
 
-    public void poseDetected() {
-        icon.setImageResource(R.drawable.success_icon);
 
+    public void showPoseDetectedPrompt() {
+        icon.setImageResource(R.drawable.success_icon);
         if(selectedButton == warriorButton)
             prompt.setText("Warrior II Pose Detected");
         else if(selectedButton == goddessButton){
@@ -145,15 +144,30 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
         }
     }
 
-    public void startCountdown() {
+
+    public void startRecordingCountdown() {
+        prompt.setText("Hold the pose for 15 seconds");
+        timer.setVisibility(View.VISIBLE);
         icon.setImageResource(R.drawable.record_icon);
-        countDownTimer = new CountDownTimer(16000, 1000) {
+        timerController = new CountDownTimer(16000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timer.setText("" + millisUntilFinished / 1000);
-                // logic to set the EditText could go here
+            }
+            public void onFinish() {}
+        }.start();
+    }
+
+    public void startCountdown(){
+        countdownTimer.setVisibility(View.VISIBLE);
+        timerController = new CountDownTimer(4000, 1000){
+            public void onTick(long millisUntilFinished) {
+                countdownTimer.setText("" + millisUntilFinished / 1000);
             }
             public void onFinish() {
-                timer.setText("0");
+                showPoseDetectedPrompt();
+                countdownTimer.setVisibility(View.INVISIBLE);
+                startRecordingCountdown();
+                countingDown = true;
             }
         }.start();
     }
@@ -164,42 +178,43 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
         warriorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selectedButton == warriorButton){
-                    unselectPose(context, warriorButton);
-                    motionProcessor.setSelectedPose("");
-                }else{
-                    selectPose(context, warriorButton, goddessButton, treeButton);
-                    motionProcessor.setSelectedPose("warrior2");
-                }
 
+                countingDown = false;
+                if(selectedButton == warriorButton){
+                    motionProcessor.setSelectedPose("");
+                    unselectPose(context, warriorButton);
+                }else{
+                    motionProcessor.setSelectedPose("warrior2");
+                    selectPose(context, warriorButton, goddessButton, treeButton);
+                }
             }
         });
 
         goddessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                countingDown = false;
                 if(selectedButton == goddessButton){
-                    unselectPose(context, goddessButton);
                     motionProcessor.setSelectedPose("");
+                    unselectPose(context, goddessButton);
                 }else{
-                    selectPose(context, goddessButton, warriorButton, treeButton);
                     motionProcessor.setSelectedPose("goddess");
+                    selectPose(context, goddessButton, warriorButton, treeButton);
                 }
-
             }
         });
 
         treeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                countingDown = false;
                 if(selectedButton == treeButton){
-                    unselectPose(context, treeButton);
                     motionProcessor.setSelectedPose("");
+                    unselectPose(context, treeButton);
                 }else{
-                    selectPose(context, treeButton, warriorButton, goddessButton);
                     motionProcessor.setSelectedPose("tree");
+                    selectPose(context, treeButton, warriorButton, goddessButton);
                 }
-
             }
         });
     }
