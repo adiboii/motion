@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <com.example.motion.helpers.vision.CameraSourcePreview
-        android:id="@+id/preview_view"
+        android:id="@+id/camera_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,30 +19,54 @@
         android:id="@+id/graphic_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/control"
-        app:layout_constraintLeft_toLeftOf="@id/preview_view"
-        app:layout_constraintRight_toRightOf="@id/preview_view"
-        app:layout_constraintTop_toTopOf="@id/preview_view" />
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_bar"
+        app:layout_constraintLeft_toLeftOf="@id/camera_screen"
+        app:layout_constraintRight_toRightOf="@id/camera_screen"
+        app:layout_constraintTop_toTopOf="@id/camera_screen" />
 
     <TextView
-        android:id="@+id/prompt"
+        android:id="@+id/text_prompt"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="25dp"
         android:background="@drawable/prompt"
+        android:fontFamily="@font/space_grotesk"
         android:gravity="center"
         android:text="Select a pose"
-        android:fontFamily="@font/space_grotesk"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/preview_view"
+        app:layout_constraintTop_toTopOf="@+id/camera_screen"
         tools:text="Select a pose" />
 
+    <ImageView
+        android:id="@+id/image_prompt_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_prompt"
+        app:layout_constraintStart_toStartOf="@+id/text_prompt"
+        app:layout_constraintTop_toTopOf="@+id/text_prompt"
+        app:srcCompat="@drawable/warning_icon" />
+
     <TextView
-        android:id="@+id/countdownTimerId"
+        android:id="@+id/text_recording_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:fontFamily="@font/space_grotesk"
+        android:text="15"
+        android:textColor="@color/black"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/text_prompt"
+        app:layout_constraintEnd_toEndOf="@+id/text_prompt"
+        app:layout_constraintTop_toTopOf="@+id/text_prompt"
+        tools:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/text_countdown_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/space_grotesk_bold"
@@ -52,35 +76,11 @@
         app:layout_constraintBottom_toBottomOf="@+id/graphic_overlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/preview_view"
+        app:layout_constraintTop_toTopOf="@+id/camera_screen"
         tools:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/textTimer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:text="15"
-        android:textColor="@color/black"
-        android:visibility="invisible"
-        android:fontFamily="@font/space_grotesk"
-        app:layout_constraintBottom_toBottomOf="@+id/prompt"
-        app:layout_constraintEnd_toEndOf="@+id/prompt"
-        app:layout_constraintTop_toTopOf="@+id/prompt"
-        tools:visibility="invisible" />
-
-    <ImageView
-        android:id="@+id/iconID"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/prompt"
-        app:layout_constraintStart_toStartOf="@+id/prompt"
-        app:layout_constraintTop_toTopOf="@+id/prompt"
-        app:srcCompat="@drawable/warning_icon" />
 
     <LinearLayout
-        android:id="@id/control"
+        android:id="@id/bottom_navigation_bar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="center"
@@ -96,7 +96,7 @@
 
         <ImageButton
             android:padding="5dp"
-            android:id="@+id/btn_warrior2"
+            android:id="@+id/button_warrior_two"
             android:layout_width="13dp"
             android:layout_height="55dp"
             android:layout_weight="1"
@@ -112,7 +112,7 @@
 
         <ImageButton
             android:padding="7dp"
-            android:id="@+id/btn_goddess"
+            android:id="@+id/button_goddess"
             android:layout_width="13dp"
             android:layout_height="55dp"
             android:layout_weight="1"
@@ -128,7 +128,7 @@
 
         <ImageButton
             android:padding="5dp"
-            android:id="@+id/btn_tree"
+            android:id="@+id/button_tree"
             android:layout_width="13dp"
             android:layout_height="55dp"
             android:layout_weight="1"
