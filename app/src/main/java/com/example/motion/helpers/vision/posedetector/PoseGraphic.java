@@ -38,12 +38,13 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   private static final float STROKE_WIDTH = 8.0f;
   private static final float POSE_CLASSIFICATION_TEXT_SIZE = 60.0f;
   private final Pose pose;
-  private final Paint whitePaint = new Paint();
+  private final Paint paint = new Paint();
   private final PoseSkeleton poseSkeleton;
   private final HashMap<Integer, PoseLandmark> essentialLandmarks;
   private final List<String> poseClassification;
   private final Paint classificationTextPaint;
   private final boolean isDoingSelectedPose;
+  private List<PoseLandmark> landmarks;
   // Constructors
   PoseGraphic(
       GraphicOverlay overlay,
@@ -60,15 +61,15 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     classificationTextPaint.setColor(Color.WHITE);
     classificationTextPaint.setTextSize(POSE_CLASSIFICATION_TEXT_SIZE);
     classificationTextPaint.setShadowLayer(5.0f, 0f, 0f, Color.BLACK);
-    whitePaint.setStrokeWidth(STROKE_WIDTH);
-    whitePaint.setColor(Color.WHITE);
+    paint.setStrokeWidth(STROKE_WIDTH);
+    paint.setColor(Color.WHITE);
   }
 
   @Override
   public void draw(Canvas canvas) {
-    if (poseSkeleton.getLandmarks().isEmpty())
+    landmarks = poseSkeleton.getLandmarks();
+    if (landmarks.isEmpty())
       return;
-
     float classificationX = POSE_CLASSIFICATION_TEXT_SIZE * 0.5f;
 //    for (int i = 0; i < poseClassification.size(); i++) {
 //      float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
@@ -86,15 +87,29 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
 //              classificationTextPaint);
 
 
-
+    checkSkeletonComplete(canvas);
     drawLandmarks(canvas);
     drawLandmarkConnections(canvas);
+  }
+
+  // Checks if all essential landmarks can be seen
+  public void checkSkeletonComplete(Canvas canvas) {
+    for(PoseLandmark landmark : landmarks) {
+      PointF3D point = landmark.getPosition3D();
+      float xCoordinate = translateX(point.getX() + DOT_RADIUS);
+      float yCoordinate = translateY(point.getY());
+      if(xCoordinate < 0 || xCoordinate > canvas.getWidth() || yCoordinate < 0 || yCoordinate > canvas.getHeight()) {
+        paint.setColor(Color.RED);
+        return;
+      }
+    }
+    paint.setColor(Color.WHITE);
   }
 
   // This function draws all essential landmarks
   // and skips unnecessary ones
   public void drawLandmarks(Canvas canvas) {
-    for (PoseLandmark landmark : poseSkeleton.getLandmarks())
+    for (PoseLandmark landmark : landmarks)
       if(essentialLandmarks.containsValue(landmark))
         drawPoint(canvas, landmark);
   }
@@ -119,7 +134,7 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   // Predefined Functions
   void drawPoint(Canvas canvas, PoseLandmark landmark) {
     PointF3D point = landmark.getPosition3D();
-    canvas.drawCircle(translateX(point.getX()), translateY(point.getY()), DOT_RADIUS, whitePaint);
+    canvas.drawCircle(translateX(point.getX()), translateY(point.getY()), DOT_RADIUS, paint);
   }
 
   void drawLine(Canvas canvas, PoseLandmark startLandmark, PoseLandmark endLandmark) {
@@ -130,6 +145,6 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
             translateY(startPosition.getY()),
             translateX(endPosition.getX()),
             translateY(endPosition.getY()),
-            whitePaint);
+            paint);
   }
 }
