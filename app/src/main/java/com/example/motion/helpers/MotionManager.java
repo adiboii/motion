@@ -1,16 +1,11 @@
 package com.example.motion.helpers;
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.motion.R;
@@ -45,13 +40,14 @@ public class MotionManager {
     // Public functions
 
     public void startCountdown(){
+        showPoseDetectedPrompt();
         textCountdownTimer.setVisibility(View.VISIBLE);
         timerController = new CountDownTimer(4000, 1000){
             public void onTick(long millisUntilFinished) {
                 textCountdownTimer.setText("" + millisUntilFinished / 1000);
             }
             public void onFinish() {
-                showPoseDetectedPrompt();
+
                 textCountdownTimer.setVisibility(View.INVISIBLE);
                 startRecordingCountdown();
                 countingDown = true;
@@ -61,6 +57,15 @@ public class MotionManager {
 
     public boolean getIsCountingDown(){
         return countingDown;
+    }
+
+    public void checkLandmarksPrompt(boolean isVisbile){
+        if(!isVisbile){
+            updatePromptWidget(R.drawable.warning_icon, "Ensure all body parts are seen");
+        }else{
+            performPrompt();
+        }
+
     }
 
     // Initialization
@@ -100,12 +105,16 @@ public class MotionManager {
         textPrompt.setText(text);
     } // No more changes until here
 
+    public void performPrompt() {
+        updatePromptWidget(R.drawable.warning_icon, "Perform the " + selectedButtonToString());
+    }
+
     private void selectButton(ImageButton button) {
         if(selectedButton != null) {
             selectedButton.setBackground(ContextCompat.getDrawable(activity, R.drawable.button_normal));
         }
         selectedButton = button;
-        updatePromptWidget(R.drawable.warning_icon, "Perform the " + selectedButtonToString());
+
         button.setBackground(ContextCompat.getDrawable(activity, R.drawable.button_pressed));
 
         if(timerController != null) {
@@ -153,6 +162,7 @@ public class MotionManager {
                 }else{
                     motionProcessor.setSelectedPose("warrior2");
                     selectButton(buttonWarriorTwo);
+                    performPrompt();
                 }
             }
         });
@@ -179,6 +189,7 @@ public class MotionManager {
                 }else{
                     motionProcessor.setSelectedPose("tree");
                     selectButton(buttonTree);
+                    //performPrompt();
                 }
             }
         });

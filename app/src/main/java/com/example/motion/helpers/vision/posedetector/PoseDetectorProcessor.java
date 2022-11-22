@@ -140,8 +140,8 @@ public class PoseDetectorProcessor
             // They shall be removed once development is done
             poseWithClassification.classificationResult,
             motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel)));
-    System.out.println("Is Visible: " + poseSkeleton.getIsVisible());
-    if(poseSkeleton.getIsVisible()){
+
+    if(motionProcessor.listener.ensureAllLandmarksCanBeSeen(poseSkeleton.getIsVisible())){
       motionProcessor.listener.verifyUserPose(motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel));
     }
 

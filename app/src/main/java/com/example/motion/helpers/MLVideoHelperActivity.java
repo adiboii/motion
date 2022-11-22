@@ -54,6 +54,16 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
                     motionManager.startCountdown();
                 }
             }
+
+            @Override
+            public boolean ensureAllLandmarksCanBeSeen(boolean isVisible) {
+                if(!motionManager.getIsCountingDown()){
+                    if(!motionProcessor.selectedPose.isEmpty()){
+                        motionManager.checkLandmarksPrompt(isVisible);
+                    }
+                }
+                return isVisible;
+            }
         });
     }
 

@@ -2,8 +2,8 @@ package com.example.motion.helpers;
 
 public class MotionProcessor {
     final public MotionListener listener;
-    String selectedPose;
-    boolean isSelectedPose;
+    String selectedPose = "";
+    boolean isSelectedPose = false;
 
     public MotionProcessor(MotionListener listener){
         this.listener = listener;
@@ -18,7 +18,6 @@ public class MotionProcessor {
             case "tree" : isSelectedPose = checkPerformance(0.96, confidenceLevel); break;
             default: isSelectedPose = false;
         }
-
         return isSelectedPose;
     }
 
@@ -30,6 +29,7 @@ public class MotionProcessor {
     public String getSelectedPose(){
         return selectedPose;
     }
+
 
     private boolean checkPerformance(double threshold, double confidenceLevel){
         if(confidenceLevel >= threshold) return true;

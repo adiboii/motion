@@ -87,7 +87,6 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
 //              classificationY,
 //              classificationTextPaint);
 
-
     checkSkeletonComplete(canvas);
     drawLandmarks(canvas);
     drawLandmarkConnections(canvas);
