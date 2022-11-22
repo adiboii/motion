@@ -48,6 +48,7 @@ public class PoseDetectorProcessor
   private final Executor classificationExecutor;
   private PoseClassifierProcessor poseClassifierProcessor;
   private final MotionProcessor motionProcessor;
+  private final PoseSkeleton poseSkeleton;
 
   // Constructors
   public PoseDetectorProcessor(
@@ -63,6 +64,7 @@ public class PoseDetectorProcessor
     this.context = context;
     this.motionProcessor = motionProcessor;
     classificationExecutor = Executors.newSingleThreadExecutor();
+    poseSkeleton = new PoseSkeleton();
   }
 
   // Pre-defined Methods
@@ -126,16 +128,23 @@ public class PoseDetectorProcessor
      * If pose is detected, call on listener to check
      * if user is doing the selected pose.
      * */
-    motionProcessor.listener.verifyUserPose(motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel));
+
+    poseSkeleton.updatePose(poseWithClassification.pose);
 
     graphicOverlay.add(
           new PoseGraphic(
             graphicOverlay,
             poseWithClassification.pose,
+            poseSkeleton,
             // The two lines below are used for debugging purposes
             // They shall be removed once development is done
             poseWithClassification.classificationResult,
             motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel)));
+    System.out.println("Is Visible: " + poseSkeleton.getIsVisible());
+    if(poseSkeleton.getIsVisible()){
+      motionProcessor.listener.verifyUserPose(motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel));
+    }
+
   }
 
   @Override
@@ -149,6 +158,7 @@ public class PoseDetectorProcessor
     // Attributes
     private final Pose pose;
     private final List<String> classificationResult;
+
 
     // Constructors
     public PoseWithClassification(Pose pose, List<String> classificationResult) {

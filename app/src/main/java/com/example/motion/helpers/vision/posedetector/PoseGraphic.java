@@ -49,11 +49,12 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   PoseGraphic(
       GraphicOverlay overlay,
       Pose pose,
+      PoseSkeleton poseSkeleton,
       List<String> poseClassification,
       boolean isDoingSelectedPose) {
     super(overlay);
     this.pose = pose;
-    this.poseSkeleton = new PoseSkeleton(pose);
+    this.poseSkeleton = poseSkeleton;
     this.essentialLandmarks = poseSkeleton.getEssentialLandmarks();
     this.poseClassification = poseClassification;
     this.isDoingSelectedPose = isDoingSelectedPose;
@@ -99,10 +100,12 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
       float xCoordinate = translateX(point.getX() + DOT_RADIUS);
       float yCoordinate = translateY(point.getY());
       if(xCoordinate < 0 || xCoordinate > canvas.getWidth() || yCoordinate < 0 || yCoordinate > canvas.getHeight()) {
+        poseSkeleton.allLandmarksVisible(false);
         paint.setColor(Color.RED);
         return;
       }
     }
+    poseSkeleton.allLandmarksVisible(true);
     paint.setColor(Color.WHITE);
   }
 
