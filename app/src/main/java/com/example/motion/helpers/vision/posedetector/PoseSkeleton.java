@@ -10,7 +10,7 @@ public class PoseSkeleton {
     // Attributes
     private List<PoseLandmark> landmarks;
     private HashMap<Integer, PoseLandmark> essentialLandmarks = new HashMap<Integer, PoseLandmark>();
-    boolean isVisible;
+    private boolean isVisible;
 
     // Constructors
     public PoseSkeleton() {}
