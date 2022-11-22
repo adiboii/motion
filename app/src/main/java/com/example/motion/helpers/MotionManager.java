@@ -44,14 +44,17 @@ public class MotionManager {
 
     // Public functions
 
+    // 3 2 1
     public void startCountdown(){
         textCountdownTimer.setVisibility(View.VISIBLE);
         timerController = new CountDownTimer(4000, 1000){
             public void onTick(long millisUntilFinished) {
                 textCountdownTimer.setText("" + millisUntilFinished / 1000);
             }
+
             public void onFinish() {
                 showPoseDetectedPrompt();
+                // 3 2 1 set to invisible
                 textCountdownTimer.setVisibility(View.INVISIBLE);
                 startRecordingCountdown();
                 countingDown = true;
@@ -129,7 +132,7 @@ public class MotionManager {
     }
 
 
-
+    // 15 seconds countdown
     private void startRecordingCountdown() {
         updatePromptWidget(R.drawable.record_icon, "Hold the pose for 15 seconds");
         textRecordingTimer.setVisibility(View.VISIBLE);

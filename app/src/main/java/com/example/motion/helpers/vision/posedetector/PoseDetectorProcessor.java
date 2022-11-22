@@ -96,7 +96,7 @@ public class PoseDetectorProcessor
             });
   }
 
-  //TODO: make to multiple returns so we can get classificationResult
+
   @Override
   protected Task<PoseWithClassification> detectInImage(MlImage image) {
     return detector

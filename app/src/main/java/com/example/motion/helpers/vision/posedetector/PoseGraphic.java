@@ -39,6 +39,7 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   private static final float POSE_CLASSIFICATION_TEXT_SIZE = 60.0f;
   private final Pose pose;
   private final Paint whitePaint = new Paint();
+  private final Paint anglePaint = new Paint();
   private final PoseSkeleton poseSkeleton;
   private final HashMap<Integer, PoseLandmark> essentialLandmarks;
   private final List<String> poseClassification;
@@ -62,6 +63,8 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     classificationTextPaint.setShadowLayer(5.0f, 0f, 0f, Color.BLACK);
     whitePaint.setStrokeWidth(STROKE_WIDTH);
     whitePaint.setColor(Color.WHITE);
+    anglePaint.setColor(Color.WHITE);
+    anglePaint.setTextSize(25);
   }
 
   @Override
@@ -70,6 +73,7 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
       return;
 
     float classificationX = POSE_CLASSIFICATION_TEXT_SIZE * 0.5f;
+
 //    for (int i = 0; i < poseClassification.size(); i++) {
 //      float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
 //              * (poseClassification.size() - i));
@@ -85,10 +89,9 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
 //              classificationY,
 //              classificationTextPaint);
 
-
-
     drawLandmarks(canvas);
     drawLandmarkConnections(canvas);
+    drawAngles(canvas);
   }
 
   // This function draws all essential landmarks
@@ -131,5 +134,65 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
             translateX(endPosition.getX()),
             translateY(endPosition.getY()),
             whitePaint);
+  }
+
+  double calculateAngles(PoseLandmark firstPoint, PoseLandmark midPoint, PoseLandmark lastPoint) {
+    double fpX = firstPoint.getPosition().x;
+    double fpY = firstPoint.getPosition().y;
+    double mpX = midPoint.getPosition().x;
+    double mpY = midPoint.getPosition().y;
+    double lpX = lastPoint.getPosition().x;
+    double lpY = lastPoint.getPosition().y;
+    Calculations solve = new Calculations();
+
+    double result = solve.calculateAngles(fpX, fpY, mpX, mpY, lpX, lpY);
+    return result;
+  }
+
+  void drawAngles(Canvas canvas){
+    PoseLandmark leftShoulder = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER);
+    PoseLandmark rightShoulder = pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER);
+    PoseLandmark leftElbow = pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW);
+    PoseLandmark rightElbow = pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW);
+    PoseLandmark leftWrist = pose.getPoseLandmark(PoseLandmark.LEFT_WRIST);
+    PoseLandmark rightWrist = pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST);
+    PoseLandmark leftHip = pose.getPoseLandmark(PoseLandmark.LEFT_HIP);
+    PoseLandmark rightHip = pose.getPoseLandmark(PoseLandmark.RIGHT_HIP);
+    PoseLandmark leftKnee = pose.getPoseLandmark(PoseLandmark.LEFT_KNEE);
+    PoseLandmark rightKnee = pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE);
+    PoseLandmark leftAnkle = pose.getPoseLandmark(PoseLandmark.LEFT_ANKLE);
+    PoseLandmark rightAnkle = pose.getPoseLandmark(PoseLandmark.RIGHT_ANKLE);
+
+    // Left Angles
+    double leftElbowAngle = calculateAngles(leftWrist, leftElbow, leftShoulder);
+    double leftShoulderAngle = calculateAngles(leftElbow, leftShoulder, leftHip);
+    double leftHipAngle = calculateAngles(leftShoulder, leftHip, leftKnee);
+    double leftKneeAngle = calculateAngles(leftHip, leftKnee, leftAnkle);
+
+    // Right Angles
+    double rightElbowAngle = calculateAngles(rightWrist, rightElbow, rightShoulder);
+    double rightShoulderAngle = calculateAngles(rightElbow, rightShoulder, rightHip);
+    double rightHipAngle = calculateAngles(rightShoulder,rightHip, rightKnee);
+    double rightKneeAngle = calculateAngles(rightHip, rightKnee, rightAnkle);
+
+    HashMap<Integer, Double> angles = new HashMap<Integer, Double>();
+    angles.put(PoseLandmark.LEFT_ELBOW, leftElbowAngle);
+    angles.put(PoseLandmark.LEFT_SHOULDER, leftShoulderAngle);
+    angles.put(PoseLandmark.LEFT_HIP, leftHipAngle);
+    angles.put(PoseLandmark.LEFT_KNEE, leftKneeAngle);
+    angles.put(PoseLandmark.RIGHT_ELBOW, rightElbowAngle);
+    angles.put(PoseLandmark.RIGHT_SHOULDER, rightShoulderAngle);
+    angles.put(PoseLandmark.RIGHT_HIP, rightHipAngle);
+    angles.put(PoseLandmark.RIGHT_KNEE, rightKneeAngle);
+
+    List<PoseLandmark> landmarks = pose.getAllPoseLandmarks();
+    for(PoseLandmark landmark : landmarks){
+        canvas.drawText(
+                String.format("%.0f", angles.get(landmark.getLandmarkType())),
+                translateX(landmark.getPosition().x),
+                translateY(landmark.getPosition().y - 30),
+
+                anglePaint);
+    }
   }
 }

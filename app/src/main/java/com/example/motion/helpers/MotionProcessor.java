@@ -1,6 +1,6 @@
 package com.example.motion.helpers;
 
-public class MotionProcessor {
+public class MotionProcessor{
     final public MotionListener listener;
     String selectedPose;
     boolean isSelectedPose;
@@ -13,6 +13,7 @@ public class MotionProcessor {
     public boolean isDoingSelectedPose(String pose, double confidenceLevel){
 
         switch(pose){
+            // Include in documents, explanation as to why there is a need for threshold
             case "warrior2" : isSelectedPose = checkPerformance(0.9999, confidenceLevel); break;
             case "goddess" : isSelectedPose = checkPerformance(0.85, confidenceLevel); break;
             case "tree" : isSelectedPose = checkPerformance(0.96, confidenceLevel); break;
@@ -35,5 +36,6 @@ public class MotionProcessor {
         if(confidenceLevel >= threshold) return true;
         return false;
     }
+
 
 }
