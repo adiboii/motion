@@ -59,13 +59,12 @@ public class MotionManager {
         return countingDown;
     }
 
-    public void checkLandmarksPrompt(boolean isVisbile){
-        if(!isVisbile){
+    public void checkLandmarksPrompt(boolean isVisible){
+        if(!isVisible){
             updatePromptWidget(R.drawable.warning_icon, "Ensure all body parts are seen");
         }else{
             performPrompt();
         }
-
     }
 
     // Initialization
