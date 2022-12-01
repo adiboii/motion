@@ -47,10 +47,11 @@ public class MotionManager {
                 textCountdownTimer.setText("" + millisUntilFinished / 1000);
             }
             public void onFinish() {
-
                 textCountdownTimer.setVisibility(View.INVISIBLE);
                 startRecordingCountdown();
+                //TODO: use only one countingDown variable
                 countingDown = true;
+                motionProcessor.isCountingDown = true;
             }
         }.start();
     }
@@ -133,7 +134,7 @@ public class MotionManager {
 
     private void showPoseDetectedPrompt() {
         imagePromptIcon.setImageResource(R.drawable.success_icon);
-        textPrompt.setText(selectedButtonToString() + "Detected");
+        textPrompt.setText(selectedButtonToString() + " Detected");
     }
 
 
@@ -145,7 +146,12 @@ public class MotionManager {
             public void onTick(long millisUntilFinished) {
                 textRecordingTimer.setText("" + millisUntilFinished / 1000);
             }
-            public void onFinish() {}
+            public void onFinish() {
+                motionProcessor.isCompleted = true;
+                motionProcessor.isCountingDown = false;
+                motionProcessor.calculateAccuracy();
+                updatePromptWidget(R.drawable.warning_icon, "Calculating Angles");
+            }
         }.start();
     }
 

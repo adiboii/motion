@@ -45,11 +45,13 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   private final Paint classificationTextPaint;
   private final boolean isDoingSelectedPose;
   private List<PoseLandmark> landmarks;
+  private double accuracy;
   // Constructors
   PoseGraphic(
       GraphicOverlay overlay,
       Pose pose,
       PoseSkeleton poseSkeleton,
+      double accuracy,
       List<String> poseClassification,
       boolean isDoingSelectedPose) {
     super(overlay);
@@ -58,6 +60,7 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     this.essentialLandmarks = poseSkeleton.getEssentialLandmarks();
     this.poseClassification = poseClassification;
     this.isDoingSelectedPose = isDoingSelectedPose;
+    this.accuracy = accuracy;
     classificationTextPaint = new Paint();
     classificationTextPaint.setColor(Color.WHITE);
     classificationTextPaint.setTextSize(POSE_CLASSIFICATION_TEXT_SIZE);
@@ -72,15 +75,15 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     if (landmarks.isEmpty())
       return;
     float classificationX = POSE_CLASSIFICATION_TEXT_SIZE * 0.5f;
-//    for (int i = 0; i < poseClassification.size(); i++) {
-//      float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
-//              * (poseClassification.size() - i));
-//      canvas.drawText(
-//              poseClassification.get(i),
-//              classificationX,
-//              classificationY,
-//              classificationTextPaint);
-//    }
+    for (int i = 0; i < poseClassification.size(); i++) {
+      float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
+              * (poseClassification.size() - i));
+      canvas.drawText(
+              String.format("Left elbow accuracy: %.2f", accuracy),
+              classificationX,
+              classificationY,
+              classificationTextPaint);
+    }
 //      canvas.drawText(
 //              String.format("Is doing selected pose: %s", isDoingSelectedPose),
 //              classificationX,

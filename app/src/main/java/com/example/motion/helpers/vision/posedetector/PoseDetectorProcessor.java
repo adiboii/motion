@@ -136,14 +136,25 @@ public class PoseDetectorProcessor
             graphicOverlay,
             poseWithClassification.pose,
             poseSkeleton,
-            // The two lines below are used for debugging purposes
+            // The three lines below are used for debugging purposes
             // They shall be removed once development is done
+            motionProcessor.userAccuracy,
             poseWithClassification.classificationResult,
-            motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel)));
+            motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel))
+            );
+
+
 
     if(motionProcessor.listener.ensureAllLandmarksCanBeSeen(poseSkeleton.getIsVisible())){
       motionProcessor.listener.verifyUserPose(motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel));
+    }  //TODO: add else statement to stop countdown if a landmark is not visible
+
+    // Once countdown has started, we want to store all pose data
+    if(motionProcessor.isCountingDown && !motionProcessor.isCompleted){
+      motionProcessor.addPoseToList(poseWithClassification.pose);
     }
+
+
 
   }
 
