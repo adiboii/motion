@@ -10,13 +10,15 @@ public class PoseSkeleton {
     // Attributes
     private List<PoseLandmark> landmarks;
     private HashMap<Integer, PoseLandmark> essentialLandmarks = new HashMap<Integer, PoseLandmark>();
+    private boolean isVisible;
 
     // Constructors
-    public PoseSkeleton(Pose pose) {
+    public PoseSkeleton() {}
+
+    public void updatePose(Pose pose){
         landmarks = pose.getAllPoseLandmarks();
         setEssentialLandmarks(pose);
     }
-
     // Methods
     public List<PoseLandmark> getLandmarks() {
         return landmarks;
@@ -41,5 +43,13 @@ public class PoseSkeleton {
         essentialLandmarks.put(9, pose.getPoseLandmark(PoseLandmark.RIGHT_HIP));
         essentialLandmarks.put(10, pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE));
         essentialLandmarks.put(11, pose.getPoseLandmark(PoseLandmark.RIGHT_ANKLE));
+    }
+
+    public void allLandmarksVisible(boolean isVisible){
+        this.isVisible = isVisible;
+    }
+
+    public boolean getIsVisible(){
+        return isVisible;
     }
 }
