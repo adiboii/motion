@@ -79,7 +79,7 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
       float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
               * (poseClassification.size() - i));
       canvas.drawText(
-              String.format("Left elbow accuracy: %.2f", accuracy),
+              String.format("performance accuracy: %.2f", accuracy),
               classificationX,
               classificationY,
               classificationTextPaint);

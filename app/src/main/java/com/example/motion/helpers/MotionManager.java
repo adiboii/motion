@@ -151,6 +151,7 @@ public class MotionManager {
                 motionProcessor.isCountingDown = false;
                 motionProcessor.calculateAccuracy();
                 updatePromptWidget(R.drawable.warning_icon, "Calculating Angles");
+                motionProcessor.totalAccuracy();
             }
         }.start();
     }
