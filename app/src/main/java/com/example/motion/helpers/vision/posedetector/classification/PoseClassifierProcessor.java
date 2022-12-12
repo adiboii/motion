@@ -23,6 +23,7 @@ import android.os.Looper;
 import android.util.Log;
 import androidx.annotation.WorkerThread;
 import com.google.common.base.Preconditions;
+import com.google.mlkit.vision.common.PointF3D;
 import com.google.mlkit.vision.pose.Pose;
 import com.google.mlkit.vision.pose.PoseLandmark;
 
@@ -70,6 +71,29 @@ public class PoseClassifierProcessor {
       lastRepResult = "";
     }
     loadPoseSamples(context);
+    displayModelAccuracy(context);
+  }
+
+  private void displayModelAccuracy(Context context) {
+    List<PoseSample> testPoseSamples = new ArrayList<>();
+    try {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(TESTING_DATASET)));
+      String csvLine = reader.readLine();
+      while(csvLine != null) {
+        PoseSample poseSample = PoseSample.getPoseSample(csvLine, ",");
+        if(poseSample != null) {
+          testPoseSamples.add(poseSample);
+        }
+        csvLine = reader.readLine();
+      }
+    } catch (Exception e) {
+      System.out.println("Error on Displaying Model's Accuracy: " + e.toString());
+    }
+    for(PoseSample sample : testPoseSamples) {
+      List<PointF3D> points = sample.getEmbedding();
+      ClassificationResult classification = poseClassifier.classify(points);
+      System.out.println(classification.getMaxConfidenceClass());
+    }
   }
 
   private void loadPoseSamples(Context context) {
