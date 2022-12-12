@@ -77,27 +77,47 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     landmarks = poseSkeleton.getLandmarks();
     if (landmarks.isEmpty())
       return;
-    float classificationX = POSE_CLASSIFICATION_TEXT_SIZE * 0.5f;
-    for (int i = 0; i < poseClassification.size(); i++) {
-      float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
-              * (poseClassification.size() - i));
-//      canvas.drawText(
-//              String.format("accuracy: %.2f", accuracy),
-//              classificationX,
-//              classificationY - 75,
-//              classificationTextPaint);
-//
-//      canvas.drawText(
-//              String.format("consistency: %.2f", consistency),
-//              classificationX,
-//              classificationY,
-//              classificationTextPaint);
-    }
-//      canvas.drawText(
-//              String.format("Is doing selected pose: %s", isDoingSelectedPose),
-//              classificationX,
-//              classificationY,
-//              classificationTextPaint);
+
+
+    // Do not delete, will be used for testing
+    // will delete after development
+
+    //    float classificationX = POSE_CLASSIFICATION_TEXT_SIZE * 0.5f;
+    //    for (int i = 0; i < poseClassification.size(); i++) {
+    //
+    //      float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
+    //              * (poseClassification.size() - i));
+    //    }
+
+    // draw accuracy
+    //      canvas.drawText(
+    //              String.format("accuracy: %.2f", accuracy),
+    //              classificationX,
+    //              classificationY - 75,
+    //              classificationTextPaint);
+
+    // draw consistency
+    //      canvas.drawText(
+    //              String.format("consistency: %.2f", consistency),
+    //              classificationX,
+    //              classificationY,
+    //              classificationTextPaint);
+
+    // draw pose name from classification result
+    //      canvas.drawText(
+    //              poseClassification.get(i),
+    //              classificationX,
+    //              classificationY,
+    //              classificationTextPaint);
+    //
+    //    }
+
+    // draw boolean whether user is doing selected pose or not
+    //      canvas.drawText(
+    //              String.format("Is doing selected pose: %s", isDoingSelectedPose),
+    //              classificationX,
+    //              classificationY,
+    //              classificationTextPaint);
 
     checkSkeletonComplete(canvas);
     drawLandmarks(canvas);

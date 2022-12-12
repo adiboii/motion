@@ -37,7 +37,8 @@ import java.util.Locale;
 // Accepts a stream of Poses for classification
 public class PoseClassifierProcessor {
   private static final String TAG = "PoseClassifierProcessor";
-  private static final String POSE_SAMPLES_FILE = "pose/yoga_poses.csv";
+  private static final String TRAINING_DATASET = "pose/training_dataset.csv";
+  private static final String TESTING_DATASET = "pose/testing_dataset.csv";
 
   // Specify classes for which we want rep counting.
   // These are the labels in the given {@code POSE_SAMPLES_FILE}. You can set your own class labels
@@ -75,7 +76,7 @@ public class PoseClassifierProcessor {
     List<PoseSample> poseSamples = new ArrayList<>();
     try {
       BufferedReader reader = new BufferedReader(
-          new InputStreamReader(context.getAssets().open(POSE_SAMPLES_FILE)));
+          new InputStreamReader(context.getAssets().open(TRAINING_DATASET)));
       String csvLine = reader.readLine();
       while (csvLine != null) {
         // If line is not a valid {@link PoseSample}, we'll get null and skip adding to the list.
