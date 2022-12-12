@@ -61,7 +61,7 @@ public class PoseSample {
       return null;
     }
     String name = tokens.get(0);
-    String className = tokens.get(1);
+    String className = tokens.get(1) == "" ? "null" : tokens.get(1);
     List<PointF3D> landmarks = new ArrayList<>();
     // Read from the third token, first 2 tokens are name and class.
     for (int i = 2; i < tokens.size(); i += NUM_DIMS) {
