@@ -46,12 +46,14 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   private final boolean isDoingSelectedPose;
   private List<PoseLandmark> landmarks;
   private double accuracy;
+  private double consistency;
   // Constructors
   PoseGraphic(
       GraphicOverlay overlay,
       Pose pose,
       PoseSkeleton poseSkeleton,
       double accuracy,
+      double consistency,
       List<String> poseClassification,
       boolean isDoingSelectedPose) {
     super(overlay);
@@ -61,6 +63,7 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     this.poseClassification = poseClassification;
     this.isDoingSelectedPose = isDoingSelectedPose;
     this.accuracy = accuracy;
+    this.consistency = consistency;
     classificationTextPaint = new Paint();
     classificationTextPaint.setColor(Color.WHITE);
     classificationTextPaint.setTextSize(POSE_CLASSIFICATION_TEXT_SIZE);
@@ -79,7 +82,13 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
       float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
               * (poseClassification.size() - i));
       canvas.drawText(
-              String.format("performance accuracy: %.2f", accuracy),
+              String.format("accuracy: %.2f", accuracy),
+              classificationX,
+              classificationY - 75,
+              classificationTextPaint);
+
+      canvas.drawText(
+              String.format("consistency: %.2f", consistency),
               classificationX,
               classificationY,
               classificationTextPaint);

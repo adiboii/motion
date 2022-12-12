@@ -14,8 +14,9 @@ public class MotionProcessor{
     boolean isSelectedPose = false;
     public boolean isCountingDown = false;
     public ArrayList<Double> landmarkAccuracies = new ArrayList<Double>();
+    public ArrayList<Double> landmarkConsistencies = new ArrayList<>();
     public double userAccuracy = 0;
-    private double userConsistency = 0;
+    public double userConsistency = 0;
     Calculations calculations = new Calculations();
     final private MotionConstants motionConstants = new MotionConstants();
     private ArrayList<Pose> poses = new ArrayList<Pose>();
@@ -80,10 +81,25 @@ public class MotionProcessor{
         landmarkAccuracies.add(calculations.calculateAccuracy(rightHipAngles, motionConstants.idealAnglesMap.get(selectedPose)[5]));
         landmarkAccuracies.add(calculations.calculateAccuracy(leftKneeAngles, motionConstants.idealAnglesMap.get(selectedPose)[6]));
         landmarkAccuracies.add(calculations.calculateAccuracy(rightKneeAngles, motionConstants.idealAnglesMap.get(selectedPose)[7]));
+
+        landmarkConsistencies.add(calculations.calculateAngleConsistency(leftElbowAngles));
+        landmarkConsistencies.add(calculations.calculateAngleConsistency(rightElbowAngles));
+        landmarkConsistencies.add(calculations.calculateAngleConsistency(leftShoulderAngles));
+        landmarkConsistencies.add(calculations.calculateAngleConsistency(rightShoulderAngles));
+        landmarkConsistencies.add(calculations.calculateAngleConsistency(leftHipAngles));
+        landmarkConsistencies.add(calculations.calculateAngleConsistency(rightHipAngles));
+        landmarkConsistencies.add(calculations.calculateAngleConsistency(leftKneeAngles));
+        landmarkConsistencies.add(calculations.calculateAngleConsistency(rightKneeAngles));
+
+
     }
 
     public void totalAccuracy(){
         userAccuracy = calculations.totalAccuracy(landmarkAccuracies);
+    }
+
+    public void totalConsistency(){
+        userConsistency = calculations.totalConsistency(landmarkConsistencies);
     }
 
     //TODO: CLEAN!

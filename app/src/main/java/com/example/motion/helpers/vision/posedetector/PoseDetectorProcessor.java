@@ -139,6 +139,7 @@ public class PoseDetectorProcessor
             // The three lines below are used for debugging purposes
             // They shall be removed once development is done
             motionProcessor.userAccuracy,
+            motionProcessor.userConsistency,
             poseWithClassification.classificationResult,
             motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel))
             );
