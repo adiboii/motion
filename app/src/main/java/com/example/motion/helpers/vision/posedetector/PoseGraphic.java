@@ -81,17 +81,17 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     for (int i = 0; i < poseClassification.size(); i++) {
       float classificationY = (canvas.getHeight() - POSE_CLASSIFICATION_TEXT_SIZE * 1.5f
               * (poseClassification.size() - i));
-      canvas.drawText(
-              String.format("accuracy: %.2f", accuracy),
-              classificationX,
-              classificationY - 75,
-              classificationTextPaint);
-
-      canvas.drawText(
-              String.format("consistency: %.2f", consistency),
-              classificationX,
-              classificationY,
-              classificationTextPaint);
+//      canvas.drawText(
+//              String.format("accuracy: %.2f", accuracy),
+//              classificationX,
+//              classificationY - 75,
+//              classificationTextPaint);
+//
+//      canvas.drawText(
+//              String.format("consistency: %.2f", consistency),
+//              classificationX,
+//              classificationY,
+//              classificationTextPaint);
     }
 //      canvas.drawText(
 //              String.format("Is doing selected pose: %s", isDoingSelectedPose),

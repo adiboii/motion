@@ -7,19 +7,19 @@ import com.google.mlkit.vision.pose.PoseLandmark;
 import java.util.ArrayList;
 
 public class MotionProcessor{
-    final public MotionListener listener;
-
-    public boolean isCompleted = false;
     String selectedPose = "";
-    boolean isSelectedPose = false;
+    final public MotionListener listener;
+    public boolean isCompleted = false;
+    public boolean isSelectedPose = false;
     public boolean isCountingDown = false;
-    public ArrayList<Double> landmarkAccuracies = new ArrayList<Double>();
-    public ArrayList<Double> landmarkConsistencies = new ArrayList<>();
+
     public double userAccuracy = 0;
     public double userConsistency = 0;
-    Calculations calculations = new Calculations();
-    final private MotionConstants motionConstants = new MotionConstants();
+    final Calculations calculations = new Calculations();
+
     private ArrayList<Pose> poses = new ArrayList<Pose>();
+    public ArrayList<Double> landmarkAccuracies = new ArrayList<Double>();
+    public ArrayList<Double> landmarkConsistencies = new ArrayList<>();
     final private ArrayList<Double> leftElbowAngles = new ArrayList<Double>();
     final private ArrayList<Double> rightElbowAngles = new ArrayList<Double>();
     final private ArrayList<Double> leftShoulderAngles = new ArrayList<Double>();
@@ -35,8 +35,10 @@ public class MotionProcessor{
     }
 
     // Methods
-    public boolean isDoingSelectedPose(String pose, double confidenceLevel){
 
+    // checks whether provided pose is
+    // the same as the selected pose
+    public boolean isDoingSelectedPose(String pose, double confidenceLevel){
         if(selectedPose.equals(pose)){
             switch(pose){
                 case "warrior2" : isSelectedPose = checkPerformance(0.9999, confidenceLevel); break;
@@ -52,11 +54,9 @@ public class MotionProcessor{
         this.selectedPose = selectedPose;
     }
 
-    public String getSelectedPose(){
-        return selectedPose;
-    }
 
-
+    // checks if confidence level is within threshold
+    // to make sure user is at least trying properly doing the pose
     private boolean checkPerformance(double threshold, double confidenceLevel){
         if(confidenceLevel >= threshold) return true;
         return false;
@@ -67,41 +67,7 @@ public class MotionProcessor{
     // countdown to avoid performance issues
     public void addPoseToList(Pose pose){ poses.add(pose); }
 
-    // After countdown, we get calculated angles and add them
-    // to their respective arraylists
-    // Once added, call Calculations.calculateAccuracy for ArrayList
-
-    public void calculateAccuracy(){
-        pushToAnglesArray();
-        landmarkAccuracies.add(calculations.calculateAccuracy(leftElbowAngles, motionConstants.idealAnglesMap.get(selectedPose)[0]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(rightElbowAngles, motionConstants.idealAnglesMap.get(selectedPose)[1]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(leftShoulderAngles, motionConstants.idealAnglesMap.get(selectedPose)[2]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(rightShoulderAngles, motionConstants.idealAnglesMap.get(selectedPose)[3]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(leftHipAngles, motionConstants.idealAnglesMap.get(selectedPose)[4]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(rightHipAngles, motionConstants.idealAnglesMap.get(selectedPose)[5]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(leftKneeAngles, motionConstants.idealAnglesMap.get(selectedPose)[6]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(rightKneeAngles, motionConstants.idealAnglesMap.get(selectedPose)[7]));
-
-        landmarkConsistencies.add(calculations.calculateAngleConsistency(leftElbowAngles));
-        landmarkConsistencies.add(calculations.calculateAngleConsistency(rightElbowAngles));
-        landmarkConsistencies.add(calculations.calculateAngleConsistency(leftShoulderAngles));
-        landmarkConsistencies.add(calculations.calculateAngleConsistency(rightShoulderAngles));
-        landmarkConsistencies.add(calculations.calculateAngleConsistency(leftHipAngles));
-        landmarkConsistencies.add(calculations.calculateAngleConsistency(rightHipAngles));
-        landmarkConsistencies.add(calculations.calculateAngleConsistency(leftKneeAngles));
-        landmarkConsistencies.add(calculations.calculateAngleConsistency(rightKneeAngles));
-    }
-
-    public void totalAccuracy(){
-        userAccuracy = calculations.totalAccuracy(landmarkAccuracies);
-    }
-
-    public void totalConsistency(){
-        userConsistency = calculations.totalConsistency(landmarkConsistencies);
-    }
-
-    //TODO: CLEAN!
-    private void pushToAnglesArray(){
+    private void calculateLandmarkAngles(){
         // Get single pose in Pose List
         // calculate angles for each joint
         for(Pose pose: poses){
@@ -136,7 +102,37 @@ public class MotionProcessor{
             rightKneeAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.RIGHT_HIP),
                     pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE),
                     pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL)
-           ));
+            ));
         }
     }
+
+    public void gradeUserPerformance(){
+        calculateLandmarkAngles();
+        // accuracy grading for individual angles
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftElbowAngles, MotionConstants.idealAnglesMap.get(selectedPose)[0]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightElbowAngles, MotionConstants.idealAnglesMap.get(selectedPose)[1]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftShoulderAngles, MotionConstants.idealAnglesMap.get(selectedPose)[2]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightShoulderAngles, MotionConstants.idealAnglesMap.get(selectedPose)[3]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftHipAngles, MotionConstants.idealAnglesMap.get(selectedPose)[4]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightHipAngles, MotionConstants.idealAnglesMap.get(selectedPose)[5]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftKneeAngles, MotionConstants.idealAnglesMap.get(selectedPose)[6]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightKneeAngles, MotionConstants.idealAnglesMap.get(selectedPose)[7]));
+
+        // consistency grading for individual angles
+        landmarkConsistencies.add(calculations.calculateConsistency(leftElbowAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(rightElbowAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(leftShoulderAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(rightShoulderAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(leftHipAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(rightHipAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(leftKneeAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(rightKneeAngles));
+    }
+
+    public void totalAccuracy(){
+        userAccuracy = calculations.totalAccuracy(landmarkAccuracies);
+    }
+
+    public void totalConsistency(){ userConsistency = calculations.totalConsistency(landmarkConsistencies); }
+
 }

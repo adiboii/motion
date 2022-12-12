@@ -182,7 +182,7 @@ public class MotionManager {
             public void onFinish() {
                 motionProcessor.isCompleted = true;
                 motionProcessor.isCountingDown = false;
-                motionProcessor.calculateAccuracy();
+                motionProcessor.gradeUserPerformance();
                 updatePromptWidget(R.drawable.warning_icon, "Calculating Angles");
                 motionProcessor.totalAccuracy();
                 motionProcessor.totalConsistency();
