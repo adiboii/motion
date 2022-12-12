@@ -60,7 +60,7 @@ public class PoseClassifierProcessor {
   private PoseClassifier poseClassifier;
   private String lastRepResult;
   public double confidenceLevel;
-
+  private  List<PoseSample> testPoseSamples = new ArrayList<>();
   @WorkerThread
   public PoseClassifierProcessor(Context context, boolean isStreamMode) {
     Preconditions.checkState(Looper.myLooper() != Looper.getMainLooper());
@@ -71,11 +71,12 @@ public class PoseClassifierProcessor {
       lastRepResult = "";
     }
     loadPoseSamples(context);
-    displayModelAccuracy(context);
+    loadTesting(context);
+    displayTestingResult(testPoseSamples);
   }
 
-  private void displayModelAccuracy(Context context) {
-    List<PoseSample> testPoseSamples = new ArrayList<>();
+  private void loadTesting(Context context) {
+
     try {
       BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(TESTING_DATASET)));
       String csvLine = reader.readLine();
@@ -89,10 +90,19 @@ public class PoseClassifierProcessor {
     } catch (Exception e) {
       System.out.println("Error on Displaying Model's Accuracy: " + e.toString());
     }
-    for(PoseSample sample : testPoseSamples) {
-      List<PointF3D> points = sample.getEmbedding();
-      ClassificationResult classification = poseClassifier.classify(points);
-      System.out.println(classification.getMaxConfidenceClass());
+  }
+
+  private void displayTestingResult(List<PoseSample> testPoseSamples) {
+    PoseClassifier testPoseClassifier = new PoseClassifier(testPoseSamples);
+    for (PoseSample sample : testPoseSamples) {
+      try {
+        List<PointF3D> points = sample.getLandmarks();
+        ClassificationResult classification = testPoseClassifier.classify(points);
+        System.out.println("AAA Class: " + sample.getClassName());
+        System.out.println(String.format("AAA Predicted Class: %s - Confidence: %.2f", classification.getMaxConfidenceClass(), classification.getClassConfidence(sample.getClassName())));
+      } catch (Exception e) {
+        System.out.println("Error on Display Testing Result: " + e);
+      }
     }
   }
 
@@ -120,6 +130,14 @@ public class PoseClassifierProcessor {
         repCounters.add(new RepetitionCounter(className));
       }
     }
+  }
+
+  private static List<PointF3D> extractPoseLandmarks(Pose pose) {
+    List<PointF3D> landmarks = new ArrayList<>();
+    for (PoseLandmark poseLandmark : pose.getAllPoseLandmarks()) {
+      landmarks.add(poseLandmark.getPosition3D());
+    }
+    return landmarks;
   }
 
 
