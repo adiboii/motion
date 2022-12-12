@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
 
     </com.example.motion.helpers.vision.CameraSourcePreview>
@@ -78,6 +78,153 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/camera_screen"
         tools:visibility="invisible" />
+
+
+    <LinearLayout
+        android:id="@+id/results_modal"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:background="@drawable/prompt"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/camera_screen"
+        android:visibility="invisible">
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/trophy"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GREAT JOB!"
+            android:fontFamily="@font/space_grotesk_bold"
+            android:textSize="24dp"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accuracy"
+                android:fontFamily="@font/space_grotesk"
+                android:textColor="@color/black"/>
+
+            <View
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <ProgressBar
+                android:id="@+id/accuracy_progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:colorControlActivated="#EEBF00"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="50" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/accuracy_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50%"
+                android:fontFamily="@font/space_grotesk"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Consistency"
+                android:fontFamily="@font/space_grotesk"
+                android:textColor="@color/black"/>
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <ProgressBar
+                android:id="@+id/consistency_progress_bar"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="50"
+                android:colorControlActivated="#56361D"/>
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/consistency_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50%"
+                android:fontFamily="@font/space_grotesk"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/button_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"
+            android:textSize="10dp"
+            android:backgroundTint="#C59A00"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@id/bottom_navigation_bar"

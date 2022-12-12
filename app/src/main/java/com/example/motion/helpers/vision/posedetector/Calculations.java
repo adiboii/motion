@@ -99,8 +99,4 @@ public class Calculations {
         double consistencyPercentage = (stdDev / mean) * 100;
         return consistencyPercentage;
     }
-
-
-
-
 }

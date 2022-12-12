@@ -2,8 +2,11 @@ package com.example.motion.helpers;
 import android.app.Activity;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -23,6 +26,14 @@ public class MotionManager {
     private ImageButton buttonWarriorTwo;
     private ImageButton buttonGoddess;
     private ImageButton buttonTree;
+
+
+    private Button buttonRetry;
+    private LinearLayout resultsModal;
+    private ProgressBar consistencyProgressBar;
+    private ProgressBar accuracyProgressBar;
+    private TextView accuracy;
+    private TextView consistency;
 
     private CountDownTimer timerController;
     public String pose;
@@ -77,6 +88,12 @@ public class MotionManager {
         buttonWarriorTwo = activity.findViewById(R.id.button_warrior_two);
         buttonGoddess = activity.findViewById(R.id.button_goddess);
         buttonTree = activity.findViewById(R.id.button_tree);
+        buttonRetry = activity.findViewById(R.id.button_retry);
+        resultsModal = activity.findViewById(R.id.results_modal);
+        consistencyProgressBar = activity.findViewById(R.id.consistency_progress_bar);
+        accuracyProgressBar = activity.findViewById(R.id.accuracy_progress_bar);
+        accuracy = activity.findViewById(R.id.accuracy_text);
+        consistency = activity.findViewById(R.id.consistency_text);
     }
 
     public void initializeDisplay() {
@@ -88,6 +105,22 @@ public class MotionManager {
 
 
     // Helper Functions
+
+    private void showResults(){
+        resultsModal.setVisibility(View.VISIBLE);
+        accuracyProgressBar.setProgress((int) motionProcessor.userAccuracy);
+        consistencyProgressBar.setProgress((int) motionProcessor.userConsistency);
+        accuracy.setVisibility(View.VISIBLE);
+        consistency.setVisibility(View.VISIBLE);
+        accuracy.setText(String.format("%.2f", motionProcessor.userAccuracy));
+        consistency.setText(String.format("%.2f", motionProcessor.userConsistency));
+    }
+
+    private void retry(){
+        resultsModal.setVisibility(View.INVISIBLE);
+        unselectButton();
+    }
+
     private String selectedButtonToString() {
         if(selectedButton == buttonWarriorTwo) {
             return "Warrior II Pose";
@@ -154,6 +187,7 @@ public class MotionManager {
                 motionProcessor.totalAccuracy();
                 motionProcessor.totalConsistency();
                 timerController.cancel();
+                showResults();
             }
         }.start();
     }
@@ -201,6 +235,13 @@ public class MotionManager {
                 }
             }
         });
+
+        buttonRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    retry();
+                }
+            });
     }
 
 

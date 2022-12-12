@@ -90,8 +90,6 @@ public class MotionProcessor{
         landmarkConsistencies.add(calculations.calculateAngleConsistency(rightHipAngles));
         landmarkConsistencies.add(calculations.calculateAngleConsistency(leftKneeAngles));
         landmarkConsistencies.add(calculations.calculateAngleConsistency(rightKneeAngles));
-
-
     }
 
     public void totalAccuracy(){
