@@ -39,6 +39,7 @@ public class MotionProcessor{
     // checks whether provided pose is
     // the same as the selected pose
     public boolean isDoingSelectedPose(String pose, double confidenceLevel){
+        System.out.println("Pose Confidence: " + confidenceLevel);
         if(selectedPose.equals(pose)){
             switch(pose){
                 case "warrior2" : isSelectedPose = checkPerformance(0.9999, confidenceLevel); break;
@@ -47,13 +48,14 @@ public class MotionProcessor{
                 default: isSelectedPose = false;
             }
         }
+        System.out.println("Is doing Selected Pose: " + isSelectedPose);
         return isSelectedPose;
     }
 
     public void setSelectedPose(String selectedPose){
+        System.out.println("Selected Pose: " + selectedPose);
         this.selectedPose = selectedPose;
     }
-
 
     // checks if confidence level is within threshold
     // to make sure user is at least trying properly doing the pose
@@ -67,6 +69,22 @@ public class MotionProcessor{
     // countdown to avoid performance issues
     public void addPoseToList(Pose pose){ poses.add(pose); }
 
+
+    public void clearArrays(){
+        userAccuracy = 0;
+        userConsistency = 0;
+        poses.clear();
+        landmarkAccuracies.clear();
+        landmarkConsistencies.clear();
+        leftElbowAngles.clear();
+        rightElbowAngles.clear();
+        leftShoulderAngles.clear();
+        rightShoulderAngles.clear();
+        leftHipAngles.clear();
+        rightHipAngles.clear();
+        leftKneeAngles.clear();
+        rightKneeAngles.clear();
+    }
     private void calculateLandmarkAngles(){
         // Get single pose in Pose List
         // calculate angles for each joint
