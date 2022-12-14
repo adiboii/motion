@@ -5,23 +5,25 @@ import com.google.mlkit.vision.pose.Pose;
 import com.google.mlkit.vision.pose.PoseLandmark;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MotionProcessor{
+    String selectedPose = "";
     final public MotionListener listener;
     public boolean isCompleted = false;
-    String selectedPose = "";
-    boolean isSelectedPose = false;
+    public boolean isSelectedPose = false;
     public boolean isCountingDown = false;
+
     public double userAccuracy = 0;
-    private double userConsistency = 0;
-    Calculations calculations = new Calculations();
+    public double userConsistency = 0;
+    final Calculations calculations = new Calculations();
+
     private ArrayList<Pose> poses = new ArrayList<Pose>();
-    final private ArrayList<ArrayList<Double>> anglesList = new ArrayList<ArrayList<Double>>();
+    public ArrayList<Double> landmarkAccuracies = new ArrayList<Double>();
+    public ArrayList<Double> landmarkConsistencies = new ArrayList<>();
     final private ArrayList<Double> leftElbowAngles = new ArrayList<Double>();
     final private ArrayList<Double> rightElbowAngles = new ArrayList<Double>();
     final private ArrayList<Double> leftShoulderAngles = new ArrayList<Double>();
-    final private ArrayList<Double> rightShouldAngles = new ArrayList<Double>();
+    final private ArrayList<Double> rightShoulderAngles = new ArrayList<Double>();
     final private ArrayList<Double> leftHipAngles = new ArrayList<Double>();
     final private ArrayList<Double> rightHipAngles = new ArrayList<Double>();
     final private ArrayList<Double> leftKneeAngles = new ArrayList<Double>();
@@ -32,10 +34,11 @@ public class MotionProcessor{
         this.listener = listener;
     }
 
-
     // Methods
-    public boolean isDoingSelectedPose(String pose, double confidenceLevel){
 
+    // checks whether provided pose is
+    // the same as the selected pose
+    public boolean isDoingSelectedPose(String pose, double confidenceLevel){
         if(selectedPose.equals(pose)){
             switch(pose){
                 case "warrior2" : isSelectedPose = checkPerformance(0.9999, confidenceLevel); break;
@@ -51,11 +54,9 @@ public class MotionProcessor{
         this.selectedPose = selectedPose;
     }
 
-    public String getSelectedPose(){
-        return selectedPose;
-    }
 
-
+    // checks if confidence level is within threshold
+    // to make sure user is at least trying properly doing the pose
     private boolean checkPerformance(double threshold, double confidenceLevel){
         if(confidenceLevel >= threshold) return true;
         return false;
@@ -66,83 +67,72 @@ public class MotionProcessor{
     // countdown to avoid performance issues
     public void addPoseToList(Pose pose){ poses.add(pose); }
 
-    // After countdown, we get calculated angles and add them
-    // to their respective arraylists
-    // Once added, call Calculations.calcaulateAccuracy for ArrayList
-
-    public void calculateAccuracy(){
-        pushToAnglesArray();
-        userAccuracy = calculations.calculateAccuracy(leftElbowAngles);
-    }
-
-    // Supposed to be, e add tanan to a single ArrayList
-    // para dali nalang ang pag get2
-    public void addToArrayList(ArrayList<Double> arrayList){
-        // 0 left elbow - 1 right elbow - 2 left shoulder - 3 right shoulder
-        // 4 left hip - 5 right hip - 6 left knee -7 right knee
-        anglesList.add(arrayList);
-    }
-    //TODO: CLEAN!
-    private void pushToAnglesArray(){
-
+    private void calculateLandmarkAngles(){
         // Get single pose in Pose List
         // calculate angles for each joint
         for(Pose pose: poses){
-            leftElbowAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.LEFT_WRIST).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_WRIST).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER).getPosition().y));
+            leftElbowAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.LEFT_WRIST),
+                    pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW),
+                    pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER)));
 
-            rightElbowAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER).getPosition().y));
+            rightElbowAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST),
+                    pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW),
+                    pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER)));
 
-            leftShoulderAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_HIP).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_HIP).getPosition().y));
+            leftShoulderAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW),
+                    pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER),
+                    pose.getPoseLandmark(PoseLandmark.LEFT_HIP)));
 
-            rightShouldAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_HIP).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_HIP).getPosition().y));
+            rightShoulderAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW),
+                    pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER),
+                    pose.getPoseLandmark(PoseLandmark.RIGHT_HIP)));
 
-            leftHipAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_HIP).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_HIP).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_KNEE).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_KNEE).getPosition().y));
+            leftHipAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER),
+                    pose.getPoseLandmark(PoseLandmark.LEFT_HIP),
+                    pose.getPoseLandmark(PoseLandmark.LEFT_KNEE)));
 
-            rightHipAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_HIP).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_HIP).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE).getPosition().y));
+            rightHipAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER),
+                    pose.getPoseLandmark(PoseLandmark.RIGHT_HIP),
+                    pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE)));
 
-            leftKneeAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.LEFT_HIP).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_HIP).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_KNEE).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_KNEE).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_HEEL).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.LEFT_HEEL).getPosition().y));
+            leftKneeAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.LEFT_HIP),
+                    pose.getPoseLandmark(PoseLandmark.LEFT_KNEE),
+                    pose.getPoseLandmark(PoseLandmark.LEFT_HEEL)));
 
-            rightKneeAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.RIGHT_HIP).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_HIP).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE).getPosition().y,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL).getPosition().x,
-                    pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL).getPosition().y));
+            rightKneeAngles.add(calculations.calculateAngles(pose.getPoseLandmark(PoseLandmark.RIGHT_HIP),
+                    pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE),
+                    pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL)
+            ));
         }
     }
+
+    public void gradeUserPerformance(){
+        calculateLandmarkAngles();
+        // accuracy grading for individual angles
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftElbowAngles, MotionConstants.idealAnglesMap.get(selectedPose)[0]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightElbowAngles, MotionConstants.idealAnglesMap.get(selectedPose)[1]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftShoulderAngles, MotionConstants.idealAnglesMap.get(selectedPose)[2]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightShoulderAngles, MotionConstants.idealAnglesMap.get(selectedPose)[3]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftHipAngles, MotionConstants.idealAnglesMap.get(selectedPose)[4]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightHipAngles, MotionConstants.idealAnglesMap.get(selectedPose)[5]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftKneeAngles, MotionConstants.idealAnglesMap.get(selectedPose)[6]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightKneeAngles, MotionConstants.idealAnglesMap.get(selectedPose)[7]));
+
+        // consistency grading for individual angles
+        landmarkConsistencies.add(calculations.calculateConsistency(leftElbowAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(rightElbowAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(leftShoulderAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(rightShoulderAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(leftHipAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(rightHipAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(leftKneeAngles));
+        landmarkConsistencies.add(calculations.calculateConsistency(rightKneeAngles));
+    }
+
+    public void totalAccuracy(){
+        userAccuracy = calculations.totalAccuracy(landmarkAccuracies);
+    }
+
+    public void totalConsistency(){ userConsistency = calculations.totalConsistency(landmarkConsistencies); }
+
 }
