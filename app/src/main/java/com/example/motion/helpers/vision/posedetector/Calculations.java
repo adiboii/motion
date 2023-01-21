@@ -33,9 +33,11 @@ public class Calculations {
         // Getting Error Percentage
         // using sum as the summation
         for (double val : anglesArray) {
+            //summation of abs((userAngle - idealAngle)/userAngle)
             sum += Math.abs((val - idealAngle)/val);
         }
 
+        // (summation/N) * 100
         double errorPercentage = (sum/anglesArray.size()) * 100;
 
         // Accuracy = 100 - error percentage
@@ -60,6 +62,7 @@ public class Calculations {
         return accuracy;
     }
 
+    //
     public double calculateConsistency(ArrayList<Double> anglesArray){
         // calculate the mean
         double sum = 0;

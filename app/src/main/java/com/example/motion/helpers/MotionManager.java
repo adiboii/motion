@@ -117,6 +117,7 @@ public class MotionManager {
     }
 
     private void retry(){
+        motionProcessor.clearArrays();
         resultsModal.setVisibility(View.INVISIBLE);
         unselectButton();
     }
@@ -162,6 +163,7 @@ public class MotionManager {
         textRecordingTimer.setVisibility(View.INVISIBLE);
         updatePromptWidget(R.drawable.warning_icon, "Select a pose");
         selectedButton.setBackground(ContextCompat.getDrawable(activity, R.drawable.button_normal));
+        motionProcessor.selectedPose = "";
         selectedButton = null;
     }
 
