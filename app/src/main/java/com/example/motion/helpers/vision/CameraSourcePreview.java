@@ -95,9 +95,9 @@ public class CameraSourcePreview extends ViewGroup {
         if (isPortraitMode()) {
           // Swap width and height sizes when in portrait, since it will be rotated by 90 degrees.
           // The camera preview and the image being processed have the same size.
-          overlay.setImageSourceInfo(max, min, isImageFlipped);
+          overlay.setImageSourceInfo(max, min, true);
         } else {
-          overlay.setImageSourceInfo(min, max, isImageFlipped);
+          overlay.setImageSourceInfo(min, max, true);
         }
         overlay.clear();
       }
