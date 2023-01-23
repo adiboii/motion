@@ -7,7 +7,7 @@ import com.google.mlkit.vision.pose.PoseLandmark;
 import java.util.ArrayList;
 
 public class MotionProcessor{
-    String selectedPose = "";
+    String selectedPose = "null";
     final public MotionListener listener;
     public boolean isCompleted = false;
     public boolean isSelectedPose = false;
@@ -20,14 +20,14 @@ public class MotionProcessor{
     private ArrayList<Pose> poses = new ArrayList<Pose>();
     public ArrayList<Double> landmarkAccuracies = new ArrayList<Double>();
     public ArrayList<Double> landmarkConsistencies = new ArrayList<>();
-    final private ArrayList<Double> leftElbowAngles = new ArrayList<Double>();
-    final private ArrayList<Double> rightElbowAngles = new ArrayList<Double>();
-    final private ArrayList<Double> leftShoulderAngles = new ArrayList<Double>();
-    final private ArrayList<Double> rightShoulderAngles = new ArrayList<Double>();
-    final private ArrayList<Double> leftHipAngles = new ArrayList<Double>();
-    final private ArrayList<Double> rightHipAngles = new ArrayList<Double>();
-    final private ArrayList<Double> leftKneeAngles = new ArrayList<Double>();
-    final private ArrayList<Double> rightKneeAngles = new ArrayList<Double>();
+    private ArrayList<Double> leftElbowAngles = new ArrayList<Double>();
+    private ArrayList<Double> rightElbowAngles = new ArrayList<Double>();
+    private ArrayList<Double> leftShoulderAngles = new ArrayList<Double>();
+    private ArrayList<Double> rightShoulderAngles = new ArrayList<Double>();
+    private ArrayList<Double> leftHipAngles = new ArrayList<Double>();
+    private ArrayList<Double> rightHipAngles = new ArrayList<Double>();
+    private ArrayList<Double> leftKneeAngles = new ArrayList<Double>();
+    private ArrayList<Double> rightKneeAngles = new ArrayList<Double>();
 
     // Constructor
     public MotionProcessor(MotionListener listener){
@@ -39,7 +39,6 @@ public class MotionProcessor{
     // checks whether provided pose is
     // the same as the selected pose
     public boolean isDoingSelectedPose(String pose, double confidenceLevel){
-        System.out.println("Pose Confidence: " + confidenceLevel);
         if(selectedPose.equals(pose)){
             switch(pose){
                 case "warrior2" : isSelectedPose = checkPerformance(0.9999, confidenceLevel); break;
@@ -48,12 +47,10 @@ public class MotionProcessor{
                 default: isSelectedPose = false;
             }
         }
-        System.out.println("Is doing Selected Pose: " + isSelectedPose);
         return isSelectedPose;
     }
 
     public void setSelectedPose(String selectedPose){
-        System.out.println("Selected Pose: " + selectedPose);
         this.selectedPose = selectedPose;
     }
 
@@ -68,7 +65,6 @@ public class MotionProcessor{
     // Getting the poses so calculations will only be done after
     // countdown to avoid performance issues
     public void addPoseToList(Pose pose){ poses.add(pose); }
-
 
     public void clearArrays(){
         userAccuracy = 0;
@@ -85,6 +81,7 @@ public class MotionProcessor{
         leftKneeAngles.clear();
         rightKneeAngles.clear();
     }
+
     private void calculateLandmarkAngles(){
         // Get single pose in Pose List
         // calculate angles for each joint
@@ -145,6 +142,8 @@ public class MotionProcessor{
         landmarkConsistencies.add(calculations.calculateConsistency(rightHipAngles));
         landmarkConsistencies.add(calculations.calculateConsistency(leftKneeAngles));
         landmarkConsistencies.add(calculations.calculateConsistency(rightKneeAngles));
+        totalAccuracy();
+        totalConsistency();
     }
 
     public void totalAccuracy(){
