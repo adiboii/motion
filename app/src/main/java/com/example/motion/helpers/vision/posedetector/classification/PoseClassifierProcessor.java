@@ -125,12 +125,6 @@ public class PoseClassifierProcessor {
       Log.e(TAG, "Error when loading pose samples.\n" + e);
     }
     poseClassifier = new PoseClassifier(poseSamples);
-
-    if (isStreamMode) {
-      for (String className : POSE_CLASSES) {
-        repCounters.add(new RepetitionCounter(className));
-      }
-    }
   }
 
   private static List<PointF3D> extractPoseLandmarks(Pose pose) {
@@ -168,22 +162,6 @@ public class PoseClassifierProcessor {
         //result.add(lastRepResult);
         return result;
       }
-
-
-
-      for (RepetitionCounter repCounter : repCounters) {
-        int repsBefore = repCounter.getNumRepeats();
-        int repsAfter = repCounter.addClassificationResult(classification);
-        if (repsAfter > repsBefore) {
-          // Play a fun beep when rep counter updates.
-          ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
-          tg.startTone(ToneGenerator.TONE_PROP_BEEP);
-          lastRepResult = String.format(
-              Locale.US, "%s : %d reps", repCounter.getClassName(), repsAfter);
-          break;
-        }
-      }
-      //result.add(lastRepResult);
     }
 
 
