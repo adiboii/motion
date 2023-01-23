@@ -64,9 +64,9 @@ dependencies {
 
     // pose
     // If you want to use the base sdk
-    implementation 'com.google.mlkit:pose-detection:17.0.1-beta7'
+    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta3'
     // If you want to use the accurate sdk
-    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta7'
+    implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta3'
 
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.guava:guava:27.1-android'
