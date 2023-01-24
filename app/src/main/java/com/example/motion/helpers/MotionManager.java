@@ -112,13 +112,16 @@ public class MotionManager {
         consistencyProgressBar.setProgress((int) motionProcessor.userConsistency);
         accuracy.setVisibility(View.VISIBLE);
         consistency.setVisibility(View.VISIBLE);
-        accuracy.setText(String.format("%.2f", motionProcessor.userAccuracy));
-        consistency.setText(String.format("%.2f", motionProcessor.userConsistency));
+        accuracy.setText(String.format("%.2f", Double.isNaN(motionProcessor.userAccuracy) ? 0 : motionProcessor.userAccuracy));
+        consistency.setText(String.format("%.2f", Double.isNaN(motionProcessor.userConsistency) ? 0 : motionProcessor.userConsistency));
     }
 
     private void retry(){
         motionProcessor.clearArrays();
         resultsModal.setVisibility(View.INVISIBLE);
+        accuracyProgressBar.setProgress(0);
+        consistencyProgressBar.setProgress(0);
+        motionProcessor.isCompleted = false;
         unselectButton();
     }
 
@@ -159,11 +162,11 @@ public class MotionManager {
     }
 
     private void unselectButton(){
-        motionProcessor.setSelectedPose("");
+        motionProcessor.setSelectedPose("null");
         textRecordingTimer.setVisibility(View.INVISIBLE);
         updatePromptWidget(R.drawable.warning_icon, "Select a pose");
         selectedButton.setBackground(ContextCompat.getDrawable(activity, R.drawable.button_normal));
-        motionProcessor.selectedPose = "";
+        motionProcessor.selectedPose = "null";
         selectedButton = null;
     }
 
@@ -171,8 +174,6 @@ public class MotionManager {
         imagePromptIcon.setImageResource(R.drawable.success_icon);
         textPrompt.setText(selectedButtonToString() + " Detected");
     }
-
-
 
     private void startRecordingCountdown() {
         updatePromptWidget(R.drawable.record_icon, "Hold the pose for 15 seconds");
@@ -186,8 +187,6 @@ public class MotionManager {
                 motionProcessor.isCountingDown = false;
                 motionProcessor.gradeUserPerformance();
                 updatePromptWidget(R.drawable.warning_icon, "Calculating Angles");
-                motionProcessor.totalAccuracy();
-                motionProcessor.totalConsistency();
                 timerController.cancel();
                 showResults();
             }
