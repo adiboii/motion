@@ -49,20 +49,20 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity{
     private void instantiateMotionProcessor() {
         motionProcessor = new MotionProcessor(new MotionListener() {
             @Override
-            public void verifyUserPose(boolean isDoingSelectedPose) {
-                if(isDoingSelectedPose && !motionManager.getIsCountingDown()){
-                    motionManager.startCountdown();
-                }
-            }
-
-            @Override
-            public boolean ensureAllLandmarksCanBeSeen(boolean isVisible) {
-                if(!motionManager.getIsCountingDown()){
-                    if(!motionProcessor.selectedPose.isEmpty()){
+            public void verifyUserPose(boolean isDoingSelectedPose, boolean isVisible) {
+                if(!motionProcessor.selectedPose.isEmpty()){
+                    if(!motionProcessor.isCountingDown){
                         motionManager.checkLandmarksPrompt(isVisible);
+                        if(isDoingSelectedPose){
+                            motionManager.showPoseDetectedPrompt();
+                            motionManager.startCountdown();
+                        }
+                    }else{
+                        if(!isDoingSelectedPose){
+                            motionManager.stopCountdown(isVisible);
+                        }
                     }
                 }
-                return isVisible;
             }
         });
     }

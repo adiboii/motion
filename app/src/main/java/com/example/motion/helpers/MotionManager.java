@@ -39,7 +39,7 @@ public class MotionManager {
 
     private CountDownTimer timerController;
     public String pose;
-    private boolean countingDown = false;
+    public boolean stopCountdown = false;
     private ImageButton selectedButton = null;
 
     MotionManager(Activity activity, MotionProcessor motionProcessor){
@@ -53,25 +53,52 @@ public class MotionManager {
     // Public functions
 
     public void startCountdown(){
-        showPoseDetectedPrompt();
+        motionProcessor.isCountingDown = true;
         textCountdownTimer.setVisibility(View.VISIBLE);
         timerController = new CountDownTimer(4000, 1000){
             public void onTick(long millisUntilFinished) {
                 textCountdownTimer.setText("" + millisUntilFinished / 1000);
+
             }
             public void onFinish() {
                 textCountdownTimer.setVisibility(View.INVISIBLE);
                 startRecordingCountdown();
-                //TODO: use only one countingDown variable
-                countingDown = true;
-                motionProcessor.isCountingDown = true;
+
             }
         }.start();
     }
 
-    public boolean getIsCountingDown(){
-        return countingDown;
+    private void startRecordingCountdown() {
+        updatePromptWidget(R.drawable.record_icon, "Hold the pose for 15 seconds");
+        textRecordingTimer.setVisibility(View.VISIBLE);
+        timerController = new CountDownTimer(16000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                textRecordingTimer.setText("" + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                motionProcessor.isCompleted = true;
+                motionProcessor.isCountingDown = false;
+                motionProcessor.gradeUserPerformance();
+                updatePromptWidget(R.drawable.warning_icon, "Calculating Angles");
+                timerController.cancel();
+                showResults();
+            }
+        }.start();
     }
+
+    public void stopCountdown(boolean isVisible){
+        stopCountdown = true;
+        timerController.cancel();
+        textCountdownTimer.setVisibility(View.INVISIBLE);
+        textRecordingTimer.setVisibility(View.INVISIBLE);
+        motionProcessor.isCountingDown = false;
+        motionProcessor.clearArrays();
+        checkLandmarksPrompt(isVisible);
+        stopCountdown = false;
+    }
+
+
 
     public void checkLandmarksPrompt(boolean isVisible){
         if(!isVisible){
@@ -201,7 +228,7 @@ public class MotionManager {
         button.setBackground(ContextCompat.getDrawable(activity, R.drawable.button_pressed));
 
         if(timerController != null) {
-            countingDown = false;
+            motionProcessor.isCountingDown = false;
             textRecordingTimer.setVisibility(View.INVISIBLE);
             timerController.cancel();
         }
@@ -216,28 +243,12 @@ public class MotionManager {
         selectedButton = null;
     }
 
-    private void showPoseDetectedPrompt() {
+    public void showPoseDetectedPrompt() {
         imagePromptIcon.setImageResource(R.drawable.success_icon);
         textPrompt.setText(selectedButtonToString() + " Detected");
     }
 
-    private void startRecordingCountdown() {
-        updatePromptWidget(R.drawable.record_icon, "Hold the pose for 15 seconds");
-        textRecordingTimer.setVisibility(View.VISIBLE);
-        timerController = new CountDownTimer(16000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                textRecordingTimer.setText("" + millisUntilFinished / 1000);
-            }
-            public void onFinish() {
-                motionProcessor.isCompleted = true;
-                motionProcessor.isCountingDown = false;
-                motionProcessor.gradeUserPerformance();
-                updatePromptWidget(R.drawable.warning_icon, "Calculating Angles");
-                timerController.cancel();
-                showResults();
-            }
-        }.start();
-    }
+
 
     // Actions to do for the buttons
     private void clickPoseBtn() {
@@ -245,7 +256,7 @@ public class MotionManager {
             @Override
             public void onClick(View v) {
 
-                countingDown = false;
+                stopCountdown = false;
                 if(selectedButton == buttonWarriorTwo){
                     unselectButton();
                 }else{
@@ -259,7 +270,7 @@ public class MotionManager {
         buttonGoddess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                countingDown = false;
+                motionProcessor.isCountingDown = false;
                 if(selectedButton == buttonGoddess){
                     unselectButton();
                 }else{
@@ -272,7 +283,7 @@ public class MotionManager {
         buttonTree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                countingDown = false;
+                motionProcessor.isCountingDown = false;
                 if(selectedButton == buttonTree){
                     unselectButton();
                 }else{

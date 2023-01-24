@@ -98,7 +98,6 @@ public class PoseDetectorProcessor
             });
   }
 
-  //TODO: make to multiple returns so we can get classificationResult
   @Override
   protected Task<PoseWithClassification> detectInImage(MlImage image) {
     return detector
@@ -119,7 +118,6 @@ public class PoseDetectorProcessor
   }
 
   @Override
-  // TODO: make a class to take in classification result and place it here
   protected void onSuccess(
       @NonNull PoseWithClassification poseWithClassification,
       @NonNull GraphicOverlay graphicOverlay) {
@@ -146,9 +144,12 @@ public class PoseDetectorProcessor
 
 
 
-    if(motionProcessor.listener.ensureAllLandmarksCanBeSeen(poseSkeleton.getIsVisible())){
-      motionProcessor.listener.verifyUserPose(motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel));
-    }  //TODO: add else statement to stop countdown if a landmark is not visible
+
+    motionProcessor.listener.verifyUserPose(
+            motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel),
+            poseSkeleton.getIsVisible()
+    );
+
 
     // Once countdown has started, we want to store all pose data
     if(motionProcessor.isCountingDown && !motionProcessor.isCompleted){
