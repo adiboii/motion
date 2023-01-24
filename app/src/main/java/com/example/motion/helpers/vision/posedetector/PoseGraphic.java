@@ -78,7 +78,6 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
     if (landmarks.isEmpty())
       return;
 
-
     // Do not delete, will be used for testing
     // will delete after development
 
@@ -127,13 +126,15 @@ public class PoseGraphic extends GraphicOverlay.Graphic {
   // Checks if all essential landmarks can be seen
   public void checkSkeletonComplete(Canvas canvas) {
     for(PoseLandmark landmark : landmarks) {
-      PointF3D point = landmark.getPosition3D();
-      float xCoordinate = translateX(point.getX() + DOT_RADIUS);
-      float yCoordinate = translateY(point.getY());
-      if(xCoordinate < 0 || xCoordinate > canvas.getWidth() || yCoordinate < 0 || yCoordinate > canvas.getHeight()) {
-        poseSkeleton.allLandmarksVisible(false);
-        paint.setColor(Color.RED);
-        return;
+      if(essentialLandmarks.containsValue(landmark)){
+        PointF3D point = landmark.getPosition3D();
+        float xCoordinate = translateX(point.getX() + DOT_RADIUS);
+        float yCoordinate = translateY(point.getY());
+        if(xCoordinate < 0 || xCoordinate > canvas.getWidth() || yCoordinate < 0 || yCoordinate > canvas.getHeight()) {
+          poseSkeleton.allLandmarksVisible(false);
+          paint.setColor(Color.RED);
+          return;
+        }
       }
     }
     poseSkeleton.allLandmarksVisible(true);
