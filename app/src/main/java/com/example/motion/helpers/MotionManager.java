@@ -30,6 +30,8 @@ public class MotionManager {
 
     private Button buttonRetry;
     private LinearLayout resultsModal;
+    private TextView resultsMessage;
+    private ImageView resultsIcon;
     private ProgressBar consistencyProgressBar;
     private ProgressBar accuracyProgressBar;
     private TextView accuracy;
@@ -90,6 +92,8 @@ public class MotionManager {
         buttonTree = activity.findViewById(R.id.button_tree);
         buttonRetry = activity.findViewById(R.id.button_retry);
         resultsModal = activity.findViewById(R.id.results_modal);
+        resultsIcon = activity.findViewById(R.id.results_icon);
+        resultsMessage = activity.findViewById(R.id.results_message);
         consistencyProgressBar = activity.findViewById(R.id.consistency_progress_bar);
         accuracyProgressBar = activity.findViewById(R.id.accuracy_progress_bar);
         accuracy = activity.findViewById(R.id.accuracy_text);
@@ -107,13 +111,53 @@ public class MotionManager {
     // Helper Functions
 
     private void showResults(){
+        textPrompt.setVisibility(View.INVISIBLE);
+        imagePromptIcon.setVisibility(View.INVISIBLE);
         resultsModal.setVisibility(View.VISIBLE);
-        accuracyProgressBar.setProgress((int) motionProcessor.userAccuracy);
-        consistencyProgressBar.setProgress((int) motionProcessor.userConsistency);
+        setResultMessage();
+        int scoreUserAccuracy = getScoreUserAccuracy();
+        int scoreUserConsistency = getScoreUserConsistency();
+        accuracyProgressBar.setProgress(scoreUserAccuracy);
+        consistencyProgressBar.setProgress(scoreUserConsistency);
         accuracy.setVisibility(View.VISIBLE);
         consistency.setVisibility(View.VISIBLE);
-        accuracy.setText(String.format("%.2f", Double.isNaN(motionProcessor.userAccuracy) ? 0 : motionProcessor.userAccuracy));
-        consistency.setText(String.format("%.2f", Double.isNaN(motionProcessor.userConsistency) ? 0 : motionProcessor.userConsistency));
+        accuracy.setText("" + scoreUserAccuracy);
+        consistency.setText("" + scoreUserConsistency);
+    }
+
+    private int getScoreUserConsistency() {
+        int scoreUserConsistency = 0;
+        if(motionProcessor.userConsistency > 0 || !Double.isNaN(motionProcessor.userConsistency))
+            scoreUserConsistency = (int) motionProcessor.userConsistency;
+        return scoreUserConsistency;
+    }
+
+    private int getScoreUserAccuracy() {
+        int scoreUserAccuracy = 0;
+        if(motionProcessor.userAccuracy > 0 || !Double.isNaN(motionProcessor.userAccuracy))
+            scoreUserAccuracy = (int) motionProcessor.userAccuracy;
+        return scoreUserAccuracy;
+    }
+
+    private void setResultMessage() {
+        String message = "";
+        double resultScore = (motionProcessor.userAccuracy + motionProcessor.userConsistency)/2;
+        int icon = R.drawable.trophy;
+        if(resultScore < 25){
+            message = "Getting started!";
+            icon = R.drawable.fire;
+        } else if(resultScore < 50){
+            message = "On a roll!";
+            icon = R.drawable.dice;
+        } else if (resultScore < 75) {
+            message= "True Yoga Champ!";
+            icon = R.drawable.prize;
+        } else {
+             message = "Yoga Master!";
+        }
+
+        resultsIcon.setImageResource(icon);
+        resultsMessage.setText(message);
     }
 
     private void retry(){
@@ -122,6 +166,8 @@ public class MotionManager {
         accuracyProgressBar.setProgress(0);
         consistencyProgressBar.setProgress(0);
         motionProcessor.isCompleted = false;
+        textPrompt.setVisibility(View.VISIBLE);
+        imagePromptIcon.setVisibility(View.VISIBLE);
         unselectButton();
     }
 
