@@ -41,8 +41,8 @@ import java.util.PriorityQueue;
  */
 public class PoseClassifier {
   private static final String TAG = "PoseClassifier";
-  private static final int MAX_DISTANCE_TOP_K = 500;
-  private static final int MEAN_DISTANCE_TOP_K = 120;
+  private static final int MAX_DISTANCE_TOP_K = 150;
+  private static final int MEAN_DISTANCE_TOP_K = 50;
   // Note Z has a lower weight as it is generally less accurate than X & Y.
   private static final PointF3D AXES_WEIGHTS = PointF3D.from(1, 1, 0.01f);
 
