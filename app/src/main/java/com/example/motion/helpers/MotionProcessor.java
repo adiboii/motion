@@ -124,14 +124,14 @@ public class MotionProcessor{
     public void gradeUserPerformance(){
         calculateLandmarkAngles();
         // accuracy grading for individual angles
-        landmarkAccuracies.add(calculations.calculateAccuracy(leftElbowAngles, MotionConstants.idealAnglesMap.get(selectedPose)[0]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(rightElbowAngles, MotionConstants.idealAnglesMap.get(selectedPose)[1]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(leftShoulderAngles, MotionConstants.idealAnglesMap.get(selectedPose)[2]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(rightShoulderAngles, MotionConstants.idealAnglesMap.get(selectedPose)[3]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(leftHipAngles, MotionConstants.idealAnglesMap.get(selectedPose)[4]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(rightHipAngles, MotionConstants.idealAnglesMap.get(selectedPose)[5]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(leftKneeAngles, MotionConstants.idealAnglesMap.get(selectedPose)[6]));
-        landmarkAccuracies.add(calculations.calculateAccuracy(rightKneeAngles, MotionConstants.idealAnglesMap.get(selectedPose)[7]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftElbowAngles.get(0), MotionConstants.idealAnglesMap.get(selectedPose)[0]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightElbowAngles.get(0), MotionConstants.idealAnglesMap.get(selectedPose)[1]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftShoulderAngles.get(0), MotionConstants.idealAnglesMap.get(selectedPose)[2]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightShoulderAngles.get(0), MotionConstants.idealAnglesMap.get(selectedPose)[3]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftHipAngles.get(0), MotionConstants.idealAnglesMap.get(selectedPose)[4]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightHipAngles.get(0), MotionConstants.idealAnglesMap.get(selectedPose)[5]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(leftKneeAngles.get(0), MotionConstants.idealAnglesMap.get(selectedPose)[6]));
+        landmarkAccuracies.add(calculations.calculateAccuracy(rightKneeAngles.get(0), MotionConstants.idealAnglesMap.get(selectedPose)[7]));
 
         // consistency grading for individual angles
         landmarkConsistencies.add(calculations.calculateConsistency(leftElbowAngles));

@@ -27,22 +27,10 @@ public class Calculations {
     }
 
     // calculating individual landmark angle accuracy
-    public double calculateAccuracy(ArrayList<Double> anglesArray, int idealAngle){
-        double sum = 0;
-
-        // Getting Error Percentage
-        // using sum as the summation
-        for (double val : anglesArray) {
-            //summation of abs((userAngle - idealAngle)/userAngle)
-            sum += Math.abs((val - idealAngle)/val);
-        }
-
-        // (summation/N) * 100
-        double errorPercentage = (sum/anglesArray.size()) * 100;
-
-        // Accuracy = 100 - error percentage
-        double accuracy = 100 - errorPercentage;
-        return accuracy;
+    public double calculateAccuracy(Double angle, int idealAngle){
+        double errorInDecimal = Math.abs((angle - idealAngle)) / 180;
+        double errorInPercentage = errorInDecimal * 100;
+        return 100 - errorInPercentage;
     }
 
     // calculating the pose accuracy using the angle accuracies
