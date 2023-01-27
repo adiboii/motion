@@ -39,11 +39,19 @@ public class MotionProcessor{
     // checks whether provided pose is
     // the same as the selected pose
     public boolean isDoingSelectedPose(String pose, double confidenceLevel){
+        if(pose.equals("warrior2-left") || pose.equals("warrior2-right")){
+            pose = "warrior2";
+        }
+
+        if(pose.equals("tree-left") || pose.equals("tree-right")){
+            pose = "tree";
+        }
+
         if(selectedPose.equals(pose)){
             switch(pose){
                 case "warrior2" : isSelectedPose = checkPerformance(0.9999, confidenceLevel); break;
                 case "goddess" : isSelectedPose = checkPerformance(0.85, confidenceLevel); break;
-                case "tree" : isSelectedPose = checkPerformance(0.96, confidenceLevel); break;
+                case "tree" : isSelectedPose = checkPerformance(0.90, confidenceLevel); break;
                 default: isSelectedPose = false;
             }
         }

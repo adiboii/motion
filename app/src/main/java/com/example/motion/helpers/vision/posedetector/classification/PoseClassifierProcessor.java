@@ -46,12 +46,14 @@ public class PoseClassifierProcessor {
   // These are the labels in the given {@code POSE_SAMPLES_FILE}. You can set your own class labels
   // for your pose samples.
   private static final String GODDESS_CLASS = "goddess";
-  private static final String TREE_CLASS = "tree";
-  private static final String WARRIOR2_CLASS = "warrior2";
+  private static final String  TREE_RIGHT_CLASS = "tree";
+  private static final String TREE_LEFT_CLASS = "tree-left";
+  private static final String WARRIOR2_LEFT_CLASS = "warrior2-left";
+  private static final String WARRIOR2_RIGHT_CLASS = "warrior2-right";
   private static final String NULL = "null";
 
   private static final String[] POSE_CLASSES = {
-        GODDESS_CLASS, TREE_CLASS, WARRIOR2_CLASS, NULL
+        GODDESS_CLASS, TREE_LEFT_CLASS, TREE_RIGHT_CLASS, WARRIOR2_LEFT_CLASS, WARRIOR2_RIGHT_CLASS, NULL
   };
 
   private final boolean isStreamMode;
@@ -150,7 +152,7 @@ public class PoseClassifierProcessor {
     List<PoseSample> poseSamples = new ArrayList<>();
     try {
       BufferedReader reader = new BufferedReader(
-          new InputStreamReader(context.getAssets().open(YOGA_DATASET)));
+          new InputStreamReader(context.getAssets().open(TRAINING_DATASET)));
       String csvLine = reader.readLine();
       while (csvLine != null) {
         // If line is not a valid {@link PoseSample}, we'll get null and skip adding to the list.
