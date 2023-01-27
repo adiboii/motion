@@ -95,17 +95,56 @@ public class PoseClassifierProcessor {
 
   private void displayTestingResult(List<PoseSample> testPoseSamples) {
     PoseClassifier testPoseClassifier = new PoseClassifier(testPoseSamples);
+    double modelAccuracy = 0;
+    double goddessAccuracy = 0;
+    double warriorLeftAccuracy = 0;
+    double warriorRightAccuracy = 0;
+    double treeLeftAccuracy = 0;
+    double treeRightAccuracy = 0;
+    double nullAccuracy = 0;
+
     for (PoseSample sample : testPoseSamples) {
       try {
         List<PointF3D> points = sample.getLandmarks();
         ClassificationResult classification = testPoseClassifier.classify(points);
         System.out.println("AAA Class: " + sample.getClassName());
         System.out.println(String.format("AAA Predicted Class: %s - Confidence: %.2f", classification.getMaxConfidenceClass(), classification.getClassConfidence(sample.getClassName())));
+        if(sample.getClassName().equals(classification.getMaxConfidenceClass())){
+          modelAccuracy++;
+          if( sample.getClassName().equalsIgnoreCase("goddess")){
+            goddessAccuracy++;
+          }
+          if( sample.getClassName().equalsIgnoreCase("warrior2-right")){
+            warriorRightAccuracy++;
+          }
+          if( sample.getClassName().equalsIgnoreCase("warrior2-left")){
+            warriorLeftAccuracy++;
+          }
+          if( sample.getClassName().equalsIgnoreCase("tree-right")){
+            treeRightAccuracy++;
+          }
+          if( sample.getClassName().equalsIgnoreCase("tree-left")){
+            treeLeftAccuracy++;
+          }
+          if( sample.getClassName().equalsIgnoreCase("null")){
+            nullAccuracy++;
+          }
+        }
+
       } catch (Exception e) {
         System.out.println("Error on Display Testing Result: " + e);
       }
     }
+    System.out.println("Model Accuracy: " + modelAccuracy / testPoseSamples.size());
+    System.out.println("Goddess Accuracy: " + goddessAccuracy / 50);
+    System.out.println("Tree-Right Accuracy: " + treeRightAccuracy / 50);
+    System.out.println("Tree-Left Accuracy: " + treeLeftAccuracy / 50);
+    System.out.println("Warrior-Right Accuracy: " + warriorRightAccuracy / 50);
+    System.out.println("Warrior-Left Accuracy: " + warriorLeftAccuracy / 50);
+    System.out.println("Null Accuracy: " + nullAccuracy/50 );
   }
+
+
 
   private void loadPoseSamples(Context context) {
     List<PoseSample> poseSamples = new ArrayList<>();

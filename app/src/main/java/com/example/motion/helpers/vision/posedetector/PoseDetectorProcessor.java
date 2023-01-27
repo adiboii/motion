@@ -142,9 +142,6 @@ public class PoseDetectorProcessor
             motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel))
             );
 
-
-
-
     motionProcessor.listener.verifyUserPose(
             motionProcessor.isDoingSelectedPose(poseWithClassification.getResult(), poseClassifierProcessor.confidenceLevel),
             poseSkeleton.getIsVisible()
