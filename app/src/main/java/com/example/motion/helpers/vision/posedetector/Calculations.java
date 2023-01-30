@@ -18,7 +18,10 @@ public class Calculations {
 
     // calculating landmark angles with pose provided
     public double calculateAngles(PoseLandmark fp, PoseLandmark mp, PoseLandmark lp){
-        double result = Math.toDegrees(Math.atan2(lp.getPosition().y - mp.getPosition().y, lp.getPosition().x - mp.getPosition().x) - Math.atan2(fp.getPosition().y-mp.getPosition().y,fp.getPosition().x-mp.getPosition().x));
+
+        double result = Math.toDegrees(Math.atan2(lp.getPosition().y - mp.getPosition().y, lp.getPosition().x - mp.getPosition().x) -
+                                            Math.atan2(fp.getPosition().y-mp.getPosition().y, fp.getPosition().x-mp.getPosition().x));
+
         result = Math.abs(result); // Angle should never be negative
         if (result > 180) {
             result = (360.0 - result); // Always get the acute representation of the angle
@@ -26,76 +29,111 @@ public class Calculations {
         return result;
     }
 
-    // calculating individual landmark angle accuracy
-    public double calculateAccuracy(Double angle, int idealAngle){
-        double errorInDecimal = Math.abs((angle - idealAngle)) / 180;
-        double errorInPercentage = errorInDecimal * 100;
-        return 100 - errorInPercentage;
+    public double calculateMean(ArrayList<Double> arr) {
+        double sum = 0;
+        for (double val : arr) {
+            sum += val;
+        }
+        double mean = sum / arr.size();
+        return mean;
     }
 
-    // calculating the pose accuracy using the angle accuracies
-    public double totalAccuracy(ArrayList<Double> anglesAccuracy){
+    // calculating individual landmark angle accuracy
+    // using deviation with moving filter average
+    public double calculateAccuracy(ArrayList<Double> anglesArray, int idealAngle) {
         double sum = 0;
+        int windowSize = 5;
+        double windowSum = 0;
+        int windowCount = 0;
 
-        // Getting Error Percentage
-        // using sum as the summation
-        for (double val : anglesAccuracy) {
-            sum += Math.abs((val - 100)/100);
+        // moving average filter
+        for (double val : anglesArray) {
+            // add new value to the window sum
+            windowSum += val;
+            // increment window count
+            windowCount++;
+            // remove oldest value if window is full
+            if (windowCount > windowSize) {
+                windowSum -= anglesArray.get(windowCount - windowSize - 1);
+            }
+            // calculate moving average
+            double average = windowSum / Math.min(windowCount, windowSize);
+            //summation
+            sum += Math.abs((average - idealAngle)/idealAngle);
         }
+        // deviation = (summation/N) * 100
+        double deviationPercentage = (sum/anglesArray.size()) * 100;
+        // Accuracy = 100 - deviation percentage
+        double accuracy = 100 - deviationPercentage;
 
-        double errorPercentage = (sum/anglesAccuracy.size()) * 100;
-
-        // Accuracy = 100 - error percentage
-        double accuracy = 100 - errorPercentage;
         return accuracy;
     }
 
-    //
-    public double calculateConsistency(ArrayList<Double> anglesArray){
-        // calculate the mean
-        double sum = 0;
-        for (double val : anglesArray) {
-            sum += val;
-        }
-        double mean = sum / anglesArray.size();
-
-        // calculate the sum of squares
-        double sumOfSquares = 0;
-        for (double val : anglesArray) {
-            sumOfSquares += Math.pow(val - mean, 2);
-        }
-
-        // calculate the standard deviation
-        double stdDev = Math.sqrt(sumOfSquares / anglesArray.size());
-
-        // print the standard deviation
-        System.out.println("Standard deviation: " + stdDev);
-        return stdDev;
-
+    // calculating the pose accuracy by getting mean
+    public double totalAccuracy(ArrayList<Double> landmarkAccuracies) {
+       return calculateMean(landmarkAccuracies);
     }
 
-    public double totalConsistency(ArrayList<Double> consistencyArray){
-        // calculate the mean
+    //calculating individual angle consistency
+    //using standard deviation with moving average filter
+    public double calculateConsistency(ArrayList<Double> anglesArray){
+        int windowSize = 10;
+        double windowSum = 0;
+        int windowCount = 0;
+        ArrayList<Double> filteredValues = new ArrayList<>();
+        for (double val : anglesArray) {
+            // add new value to the window sum
+            windowSum += val;
+            // increment window count
+            windowCount++;
+            // remove oldest value if window is full
+            if (windowCount > windowSize) {
+                windowSum -= anglesArray.get(windowCount - windowSize - 1);
+            }
+            // calculate moving average
+            double average = windowSum / Math.min(windowCount, windowSize);
+            filteredValues.add(average);
+        }
+
+        // calculate the mean with filtered values
         double sum = 0;
-        for (double val : consistencyArray) {
+        for (double val : filteredValues) {
             sum += val;
         }
-        double mean = sum / consistencyArray.size();
+        double mean = sum / filteredValues.size();
 
-        // calculate the sum of squares
+        // calculate the sum of squares with filtered values
         double sumOfSquares = 0;
-        for (double val : consistencyArray) {
+        for (double val : filteredValues) {
             sumOfSquares += Math.pow(val - mean, 2);
         }
 
-        // calculate the standard deviation
-        double stdDev = Math.sqrt(sumOfSquares / consistencyArray.size());
+        // calculate the standard deviation with filtered values
+        double stdDev = Math.sqrt(sumOfSquares / filteredValues.size());
 
-        // print the standard deviation
-        System.out.println("Total Standard deviation: " + stdDev);
+        return stdDev;
+    }
+
+    // calculating total consistency
+    // using standard deviation
+    public double totalConsistency(ArrayList<Double> landmarkConsistencies){
+        // calculate the mean with original values
+        double mean = calculateMean(landmarkConsistencies);
+
+        // calculate the sum of squares with original values
+        double sumOfSquares = 0;
+        for (double val : landmarkConsistencies) {
+            sumOfSquares += Math.pow(val - mean, 2);
+        }
+
+        // calculate the standard deviation with original values
+        double stdDev = Math.sqrt(sumOfSquares / landmarkConsistencies.size());
 
         // calculate the consistency as a percentage
-        double consistencyPercentage = (stdDev / mean) * 100;
+        double consistencyPercentage = 100 - ((stdDev / mean) * 100);
+
         return consistencyPercentage;
     }
+
+
 }
