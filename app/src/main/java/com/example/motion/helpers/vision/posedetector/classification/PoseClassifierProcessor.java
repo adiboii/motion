@@ -30,7 +30,9 @@ import com.google.mlkit.vision.pose.PoseLandmark;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,6 +78,7 @@ public class PoseClassifierProcessor {
     loadPoseSamples(context);
     loadTesting(context);
     displayTestingResult(testPoseSamples);
+    displayConfusionMatrix(testPoseSamples);
   }
 
   private void loadTesting(Context context) {
@@ -93,6 +96,68 @@ public class PoseClassifierProcessor {
     } catch (Exception e) {
       System.out.println("Error on Displaying Model's Accuracy: " + e.toString());
     }
+  }
+
+  private void displayConfusionMatrix(List<PoseSample> testPoseSamples){
+    PoseClassifier testPoseClassifier = new PoseClassifier(testPoseSamples);
+    int[][] matrix = new int[6][6];
+    int row = 0;
+    int column = 0;
+
+    for(PoseSample sample : testPoseSamples){
+      try{
+        List<PointF3D> points = sample.getLandmarks();
+        ClassificationResult classification = testPoseClassifier.classify(points);
+
+        if(sample.getClassName().equalsIgnoreCase("goddess")){
+          row = 0;
+        } else if (sample.getClassName().equalsIgnoreCase("warrior2-right")){
+          row = 1;
+        } else if(sample.getClassName().equalsIgnoreCase("warrior2-left")){
+          row = 2;
+        } else if (sample.getClassName().equalsIgnoreCase("tree-right")){
+          row = 3;
+        } else if (sample.getClassName().equalsIgnoreCase("tree-left")){
+          row = 4;
+        } else if (sample.getClassName().equalsIgnoreCase("null")){
+          row = 5;
+        };
+
+        if(classification.getMaxConfidenceClass().equalsIgnoreCase("goddess")){
+          column = 0;
+        } else if (classification.getMaxConfidenceClass().equalsIgnoreCase("warrior2-right")){
+          column = 1;
+        } else if(classification.getMaxConfidenceClass().equalsIgnoreCase("warrior2-left")){
+          column = 2;
+        } else if (classification.getMaxConfidenceClass().equalsIgnoreCase("tree-right")){
+          column = 3;
+        } else if (classification.getMaxConfidenceClass().equalsIgnoreCase("tree-left")){
+          column = 4;
+        } else if (classification.getMaxConfidenceClass().equalsIgnoreCase("null")){
+          column = 5;
+        };
+
+        matrix[row][column]++;
+      } catch (Exception e){
+        System.out.println("Error on Display Testing Result: " + e);
+      }
+    }
+
+    int total = 0;
+    for(int i = 0; i<matrix.length; i++){
+      for(int j=0; j<matrix[i].length;j++){
+        System.out.print(matrix[i][j] + " ");
+        if(i==j){
+          total+=matrix[i][j];
+        }
+      }
+      System.out.println("---");
+    }
+
+    double accuracy =  ((double)total / (double) testPoseSamples.size());
+
+    System.out.println("Confusion Matrix Accuracy: " + accuracy);
+
   }
 
   private void displayTestingResult(List<PoseSample> testPoseSamples) {
