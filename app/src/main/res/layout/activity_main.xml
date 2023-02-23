@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/serenade"
+    tools:context=".MainActivity"
     >
 
     <LinearLayout
@@ -24,7 +25,7 @@
             />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_start"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:text="Start"
@@ -34,11 +35,11 @@
             />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btn_history"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="History"
             android:textColor="@color/black"
+            android:text="History"
             android:background="@drawable/button"
             />
     </LinearLayout>
