@@ -13,7 +13,6 @@ import com.example.motion.object.PoseDetectionActivity;
 public class MainActivity extends AppCompatActivity {
     Button btnStart;
     Button btnHistory;
-    Button selectedButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
