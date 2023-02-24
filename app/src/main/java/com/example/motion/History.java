@@ -201,6 +201,8 @@ public class History extends AppCompatActivity {
                 TableRow.LayoutParams.WRAP_CONTENT,
                 4f
         );
+        int previousAccuracy = 0;
+        int previousConsistency = 0;
         for(UserData user: list){
             TableRow row = new TableRow(this);
 
@@ -228,8 +230,31 @@ public class History extends AppCompatActivity {
             consistencyTextView.setTextColor(ContextCompat.getColor(this, R.color.black));
             row.addView(consistencyTextView);
 
+            // create an ImageView to indicate if the user's accuracy has improved from the previous date
+            if(previousAccuracy != 0) {
+                ImageView accuracyImageView = createImageView(user.getAccuracy() > previousAccuracy);
+                row.addView(accuracyImageView, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+
+                // create an ImageView to indicate if the user's consistency has improved from the previous date
+                ImageView consistencyImageView = createImageView(user.getConsistency() > previousConsistency);
+                row.addView(consistencyImageView, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            }
+
+            previousAccuracy = user.getAccuracy();
+            previousConsistency = user.getConsistency();
+
+            tblTable.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+
             tblTable.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         }
+    }
+
+    private ImageView createImageView(boolean condition) {
+        ImageView imageView = new ImageView(this);
+        int arrowResource = condition ? R.drawable.arrow_up : R.drawable.arrow_down;
+        imageView.setImageResource(arrowResource);
+        imageView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        return imageView;
     }
 
     private void CreateSummary(List<UserData> list){
