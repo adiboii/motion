@@ -3,6 +3,7 @@ package com.example.motion.helpers.vision.posedetector;
 import com.google.mlkit.vision.pose.PoseLandmark;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Calculations {
 
@@ -92,6 +93,7 @@ public class Calculations {
             }
             // calculate moving average
             double average = windowSum / Math.min(windowCount, windowSize);
+
             filteredValues.add(average);
         }
 
@@ -111,29 +113,51 @@ public class Calculations {
         // calculate the standard deviation with filtered values
         double stdDev = Math.sqrt(sumOfSquares / filteredValues.size());
 
-        return stdDev;
+        double range = Collections.max(anglesArray) - Collections.min(anglesArray);
+        double consistencyPercentage = (stdDev / range) * 100;
+        System.out.println("Consistency Percentage: " + consistencyPercentage);
+        return consistencyPercentage;
     }
 
     // calculating total consistency
     // using standard deviation
-    public double totalConsistency(ArrayList<Double> landmarkConsistencies){
-        // calculate the mean with original values
-        double mean = calculateMean(landmarkConsistencies);
-
-        // calculate the sum of squares with original values
-        double sumOfSquares = 0;
+    public double totalConsistency(ArrayList<Double> landmarkConsistencies) {
+        // Smooth out the values using a simple moving average filter with a window size of 3
+        int windowSize = 5;
+        double windowSum = 0;
+        int windowCount = 0;
+        ArrayList<Double> filteredValues = new ArrayList<>();
         for (double val : landmarkConsistencies) {
+            // add new value to the window sum
+            windowSum += val;
+            // increment window count
+            windowCount++;
+            // remove oldest value if window is full
+            if (windowCount > windowSize) {
+                windowSum -= landmarkConsistencies.get(windowCount - windowSize - 1);
+            }
+            // calculate moving average
+            double average = windowSum / Math.min(windowCount, windowSize);
+
+            filteredValues.add(average);
+        }
+
+        // calculate the mean with smoothed values
+        double mean = calculateMean(filteredValues);
+
+        // calculate the sum of squares with smoothed values
+        double sumOfSquares = 0;
+        for (double val : filteredValues) {
             sumOfSquares += Math.pow(val - mean, 2);
         }
 
-        // calculate the standard deviation with original values
-        double stdDev = Math.sqrt(sumOfSquares / landmarkConsistencies.size());
+        // calculate the standard deviation with smoothed values
+        double stdDev = Math.sqrt(sumOfSquares / filteredValues.size());
 
         // calculate the consistency as a percentage
         double consistencyPercentage = 100 - ((stdDev / mean) * 100);
 
         return consistencyPercentage;
     }
-
 
 }

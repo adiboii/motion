@@ -91,6 +91,7 @@ public class MotionManager {
                 motionProcessor.gradeUserPerformance();
                 updatePromptWidget(R.drawable.warning_icon, "Calculating Angles");
                 timerController.cancel();
+                textRecordingTimer.setVisibility(View.INVISIBLE);
                 showResults();
             }
         }.start();
@@ -150,6 +151,7 @@ public class MotionManager {
         textPrompt.setVisibility(View.INVISIBLE);
         imagePromptIcon.setVisibility(View.INVISIBLE);
         resultsModal.setVisibility(View.VISIBLE);
+        textRecordingTimer.setVisibility(View.INVISIBLE);
         setResultMessage();
         int scoreUserAccuracy = getScoreUserAccuracy();
         int scoreUserConsistency = getScoreUserConsistency();

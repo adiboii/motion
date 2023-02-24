@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -77,6 +80,12 @@ public class History extends AppCompatActivity {
                 Reset();
                 txtNoRecords.setVisibility(View.VISIBLE);
             } else {
+                Collections.sort(listUserWarriorTwo, new Comparator<UserData>() {
+                    @Override
+                    public int compare(UserData o1, UserData o2) {
+                        return o2.getDateTime().compareTo(o1.getDateTime());
+                    }
+                });
                DisplayRecords(listUserWarriorTwo);
                txtPerfMade.setText(listUserWarriorTwo.size() + "");
             }
@@ -90,6 +99,12 @@ public class History extends AppCompatActivity {
                 Reset();
                 txtNoRecords.setVisibility(View.VISIBLE);
             } else {
+                Collections.sort(listUserTree, new Comparator<UserData>() {
+                    @Override
+                    public int compare(UserData o1, UserData o2) {
+                        return o2.getDateTime().compareTo(o1.getDateTime());
+                    }
+                });
                 DisplayRecords(listUserTree);
                 txtPerfMade.setText(listUserTree.size() + "");
             }
@@ -103,6 +118,12 @@ public class History extends AppCompatActivity {
                 Reset();
                 txtNoRecords.setVisibility(View.VISIBLE);
             } else {
+                Collections.sort(listUserGoddess, new Comparator<UserData>() {
+                    @Override
+                    public int compare(UserData o1, UserData o2) {
+                        return o2.getDateTime().compareTo(o1.getDateTime());
+                    }
+                });
                 DisplayRecords(listUserGoddess);
                 txtPerfMade.setText(listUserGoddess.size() + "");
             }
@@ -129,7 +150,6 @@ public class History extends AppCompatActivity {
     }
 
     private void FetchData(){
-        System.out.println("Hello: " + listUserData.size());
         for(UserData user: listUserData){
             if(user.getPose().equalsIgnoreCase("Warrior II Pose")){
                 countWarrior++;
@@ -164,7 +184,7 @@ public class History extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void CreateTable(List<UserData> list) {
-
+        boolean isFirst = true;
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy\nHH:mm:ss");
         TableRow.LayoutParams layoutParams1 = new TableRow.LayoutParams(
                 TableRow.LayoutParams.WRAP_CONTENT,
