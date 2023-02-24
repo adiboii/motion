@@ -11,7 +11,12 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.example.motion.DBHelper;
 import com.example.motion.R;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MotionManager {
 
@@ -42,12 +47,16 @@ public class MotionManager {
     public boolean stopCountdown = false;
     private ImageButton selectedButton = null;
 
+    DBHelper dbHelper;
+
+
     MotionManager(Activity activity, MotionProcessor motionProcessor){
         this.activity = activity;
         this.motionProcessor = motionProcessor;
         connectToXML();
         initializeDisplay();
         clickPoseBtn();
+        dbHelper = new DBHelper(activity);
     }
 
     // Public functions
@@ -150,6 +159,8 @@ public class MotionManager {
         consistency.setVisibility(View.VISIBLE);
         accuracy.setText("" + scoreUserAccuracy);
         consistency.setText("" + scoreUserConsistency);
+        System.out.println("selected: " + selectedButtonToString());
+        InsertData(selectedButtonToString(),scoreUserAccuracy,scoreUserConsistency);
     }
 
     private int getScoreUserConsistency() {
@@ -300,6 +311,22 @@ public class MotionManager {
                     retry();
                 }
             });
+    }
+
+    private void InsertData(String pose, int accuracy, int consistency){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String datetime = dateFormat.format(date);
+        Boolean inserted = null;
+
+        try {
+            inserted = dbHelper.Insert(pose, datetime, accuracy, consistency);
+            if (inserted) {
+                System.out.println("Data is inserted");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 

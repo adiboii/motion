@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".History"
+    >
+
+
+    <TextView
+        android:id="@+id/pose_name"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/rounded_corner_view"
+        android:fontFamily="@font/space_grotesk"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="Pose Name"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        android:text="Performances Made"
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/pose_name"
+        app:layout_constraintTop_toTopOf="@+id/pose_name" />
+
+    <TextView
+        android:id="@+id/no_perf_made"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="64dp"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/pose_name"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
+    <TextView
+        android:id="@+id/no_records"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="There are no records yet"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/select_pose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select a pose"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TableLayout
+        android:id="@+id/table_summary"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pose_name"
+        android:showDividers="none"
+        >
+        <TableRow>
+            <TextView
+                android:id="@+id/txtLabel1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_horizontal"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:text="Highest Accuracy"
+                />
+
+            <TextView
+                android:id="@+id/txtLabel2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_horizontal"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:text="Highest Consistency" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:id="@+id/txtHighAccu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_horizontal"
+                android:padding="10sp"
+                android:text="21%"
+                android:textSize="40sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtHighCon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_horizontal"
+                android:padding="10sp"
+                android:text="22%"
+                android:textSize="40sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txtLabel3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_horizontal"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:text="Average Accuracy" />
+
+            <TextView
+                android:id="@+id/txtLabel4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_horizontal"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:text="Average Consistency" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txtAveAccu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_horizontal"
+                android:padding="10sp"
+                android:text="20%"
+                android:textSize="40sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtAveCon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_horizontal"
+                android:padding="10sp"
+                android:text="21%"
+                android:textSize="40sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+        </TableRow>
+
+
+    </TableLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_bar"
+        app:layout_constraintTop_toBottomOf="@+id/table_summary"
+        app:layout_constraintVertical_bias="0.121"
+        android:layout_marginTop="20dp"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TableLayout
+            android:id="@+id/table_table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:showDividers="none"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_bar"
+            app:layout_constraintTop_toBottomOf="@+id/table_summary">
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/txtLabel5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:gravity="center_horizontal"
+                    android:padding="5dp"
+                    android:text="Date"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtLabel6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:gravity="center_horizontal"
+                    android:padding="5dp"
+                    android:text="Accuracy"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtLabel7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:gravity="center_horizontal"
+                    android:padding="5dp"
+                    android:text="Consistency"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+            </TableRow>
+        </TableLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:textColor="@color/black"
+        android:id="@id/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="#ffff"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:padding="5dp"
+            android:id="@+id/button_warrior_two"
+            android:layout_width="13dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:background="@drawable/button"
+            android:elevation="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/warrior2" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:padding="7dp"
+            android:id="@+id/button_goddess"
+            android:layout_width="13dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:background="@drawable/button"
+            android:elevation="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/godess" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:padding="5dp"
+            android:id="@+id/button_tree"
+            android:layout_width="13dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:background="@drawable/button"
+            android:elevation="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/tree"
+            />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
