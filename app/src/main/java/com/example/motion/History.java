@@ -198,6 +198,8 @@ public class History extends AppCompatActivity {
             TextView consistencyTextView = new TextView(this);
             ImageView consistencyChange = new ImageView(this);
             ImageView accuracyChange = new ImageView(this);
+            ImageView blank1 = new ImageView(this);
+            ImageView blank2 = new ImageView(this);
             LinearLayout accuracyLayout = new LinearLayout(this);
             LinearLayout consistencyLayout = new LinearLayout(this);
 
@@ -208,7 +210,6 @@ public class History extends AppCompatActivity {
                 setImageResource(accuracyChange, recent.getAccuracy(), previous.getAccuracy());
             }
 
-
             dateTimeTextView.setText(dateFormat.format(data.getDateTime()));
             setTextView(layoutParams, dateTimeTextView, dateFormat.format(data.getDateTime()));
             row.addView(dateTimeTextView);
@@ -218,17 +219,14 @@ public class History extends AppCompatActivity {
 
             if (list.indexOf(data) == 0) {
                 setLinearLayoutView(accuracyLayout, layoutParams, accuracyTextView, accuracyChange);
-                row.addView(accuracyLayout);
+                setLinearLayoutView(consistencyLayout, layoutParams, consistencyTextView, consistencyChange);
             } else {
-                row.addView(accuracyTextView);
+                setLinearLayoutView(accuracyLayout, layoutParams, accuracyTextView, blank1);
+                setLinearLayoutView(consistencyLayout, layoutParams, consistencyTextView, blank2);
             }
 
-            if (list.indexOf(data) == 0) {
-                setLinearLayoutView(consistencyLayout, layoutParams, consistencyTextView, consistencyChange);
-                row.addView(consistencyLayout);
-            } else {
-                row.addView(consistencyTextView);
-            }
+            row.addView(accuracyLayout);
+            row.addView(consistencyLayout);
 
             tblTable.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         }
@@ -261,6 +259,7 @@ public class History extends AppCompatActivity {
         layout.setClipToPadding(false);
         textView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         layout.addView(textView);
+
         layout.addView(imageView, new LinearLayout.LayoutParams(dpToPx(16), dpToPx(16)));
     }
 
