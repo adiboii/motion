@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -184,52 +186,86 @@ public class History extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void CreateTable(List<UserData> list) {
-        boolean isFirst = true;
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy\nHH:mm:ss");
-        TableRow.LayoutParams layoutParams1 = new TableRow.LayoutParams(
-                TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT,
-                4f
-        );
-        TableRow.LayoutParams layoutParams2= new TableRow.LayoutParams(
-                TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT,
-                4f
-        );
-        TableRow.LayoutParams layoutParams3 = new TableRow.LayoutParams(
-                TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT,
-                4f
-        );
-        for(UserData user: list){
-            TableRow row = new TableRow(this);
+        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 4f);
+        layoutParams.setMargins(0, 0, 0, 0);
 
-            TextView dateTimeTextView = new TextView(this);
-            dateTimeTextView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 4f));
-            dateTimeTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-            dateTimeTextView.setPadding(5, 5, 5, 5);
-            dateTimeTextView.setText(dateFormat.format(user.getDateTime()));
-            dateTimeTextView.setTextColor(ContextCompat.getColor(this, R.color.black));
+        for (UserData data : list) {
+            int i = 0;
+            TableRow row = new TableRow(this);
+            TextView dateTimeTextView =  new TextView(this);
+            TextView accuracyTextView = new TextView(this);
+            TextView consistencyTextView = new TextView(this);
+            ImageView consistencyChange = new ImageView(this);
+            ImageView accuracyChange = new ImageView(this);
+            ImageView blank1 = new ImageView(this);
+            ImageView blank2 = new ImageView(this);
+            LinearLayout accuracyLayout = new LinearLayout(this);
+            LinearLayout consistencyLayout = new LinearLayout(this);
+
+            if (list.size() > 1) {
+                UserData recent = list.get(i);
+                UserData previous = list.get(i + 1);
+                setImageResource(consistencyChange, recent.getConsistency(), previous.getConsistency());
+                setImageResource(accuracyChange, recent.getAccuracy(), previous.getAccuracy());
+            }
+
+            dateTimeTextView.setText(dateFormat.format(data.getDateTime()));
+            setTextView(layoutParams, dateTimeTextView, dateFormat.format(data.getDateTime()));
             row.addView(dateTimeTextView);
 
-            TextView accuracyTextView = new TextView(this);
-            accuracyTextView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 4f));
-            accuracyTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-            accuracyTextView.setPadding(5, 5, 5, 5);
-            accuracyTextView.setText(String.valueOf(user.getAccuracy()) + "%");
-            accuracyTextView.setTextColor(ContextCompat.getColor(this, R.color.black));
-            row.addView(accuracyTextView);
+            setTextView(layoutParams, accuracyTextView, String.valueOf(data.getAccuracy()) + "%");
+            setTextView(layoutParams, consistencyTextView, String.valueOf(data.getConsistency()) + "%");
 
-            TextView consistencyTextView = new TextView(this);
-            consistencyTextView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 4f));
-            consistencyTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-            consistencyTextView.setPadding(5, 5, 5, 5);
-            consistencyTextView.setText(String.valueOf(user.getConsistency()) + "%");
-            consistencyTextView.setTextColor(ContextCompat.getColor(this, R.color.black));
-            row.addView(consistencyTextView);
+            if (list.indexOf(data) == 0) {
+                setLinearLayoutView(accuracyLayout, layoutParams, accuracyTextView, accuracyChange);
+                setLinearLayoutView(consistencyLayout, layoutParams, consistencyTextView, consistencyChange);
+            } else {
+                setLinearLayoutView(accuracyLayout, layoutParams, accuracyTextView, blank1);
+                setLinearLayoutView(consistencyLayout, layoutParams, consistencyTextView, blank2);
+            }
+
+            row.addView(accuracyLayout);
+            row.addView(consistencyLayout);
 
             tblTable.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         }
+    }
+
+    private void setImageResource(ImageView imageView, int currentValue, int previousValue) {
+        if (currentValue > previousValue) {
+            imageView.setImageResource(R.drawable.arrow_up);
+        } else if (currentValue < previousValue) {
+            imageView.setImageResource(R.drawable.arrow_down);
+        } else {
+            imageView.setImageResource(R.drawable.equal);
+        }
+    }
+
+    private void setTextView(TableRow.LayoutParams layoutParams, TextView textView, String text) {
+        textView.setLayoutParams(layoutParams);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        textView.setPadding(5, 5, 5, 5);
+        textView.setText(text);
+        textView.setTextColor(ContextCompat.getColor(this, R.color.black));
+    }
+
+    private void setLinearLayoutView(LinearLayout layout, TableRow.LayoutParams layoutParams, TextView textView, ImageView imageView){
+        layout.setLayoutParams(layoutParams);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setPadding(0, 0, 0, 0);
+        layout.setGravity(Gravity.CENTER);
+        layout.setClipChildren(false);
+        layout.setClipToPadding(false);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        layout.addView(textView);
+
+        layout.addView(imageView, new LinearLayout.LayoutParams(dpToPx(16), dpToPx(16)));
+    }
+
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
     }
 
     private void CreateSummary(List<UserData> list){
