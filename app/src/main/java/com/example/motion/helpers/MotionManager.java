@@ -79,10 +79,10 @@ public class MotionManager {
 
     private void startRecordingCountdown() {
         updatePromptWidget(R.drawable.record_icon, "Hold the pose for 15 seconds");
-        textRecordingTimer.setVisibility(View.VISIBLE);
+        textCountdownTimer.setVisibility(View.VISIBLE);
         timerController = new CountDownTimer(16000, 1000) {
             public void onTick(long millisUntilFinished) {
-                textRecordingTimer.setText("" + millisUntilFinished / 1000);
+                textCountdownTimer.setText("" + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
@@ -91,7 +91,7 @@ public class MotionManager {
                 motionProcessor.gradeUserPerformance();
                 updatePromptWidget(R.drawable.warning_icon, "Calculating Angles");
                 timerController.cancel();
-                textRecordingTimer.setVisibility(View.INVISIBLE);
+                textCountdownTimer.setVisibility(View.INVISIBLE);
                 showResults();
             }
         }.start();
